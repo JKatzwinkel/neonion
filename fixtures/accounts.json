@@ -1,87 +1,87 @@
 [
-    {
-        "fields": {
-            "email": "neonion-test@fu-berlin.de",
-            "groups": [],
-            "hidden_documents": [],
-            "is_active": true,
-            "is_staff": false,
-            "is_superuser": false,
-            "joined": "2014-12-22T14:12:01.868Z",
-            "last_login": "2014-12-22T14:12:01.743Z",
-            "name": "",
-            "owned_documents": [],
-            "password": "pbkdf2_sha256$12000$ETvI760YU3He$C76eiXw2X8p8OibaZUkXNmKFa0z23MedwveNZC6xivA=",
-            "surname": "",
-            "user_permissions": [],
-            "username": "neonion-test@fu-berlin.de"
-        },
-        "model": "accounts.user",
-        "pk": 1
+  {
+    "fields": {
+      "email": "neonion-test@fu-berlin.de",
+      "groups": [],
+      "hidden_documents": [],
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "joined": "2014-12-22T14:12:01.868Z",
+      "last_login": "2014-12-22T14:12:01.743Z",
+      "name": "",
+      "owned_documents": [],
+      "password": "pbkdf2_sha256$12000$ETvI760YU3He$C76eiXw2X8p8OibaZUkXNmKFa0z23MedwveNZC6xivA=",
+      "surname": "",
+      "user_permissions": [],
+      "username": "neonion-test@fu-berlin.de"
     },
-    {
-        "fields": {
-            "email": "neonion-admin@fu-berlin.de",
-            "groups": [],
-            "hidden_documents": [],
-            "is_active": true,
-            "is_staff": false,
-            "is_superuser": true,
-            "joined": "2014-12-22T14:12:17.516Z",
-            "last_login": "2018-02-24T22:05:53.793Z",
-            "name": "",
-            "owned_documents": [
-                "196a22383c1b11e7a52628b2bdacf51c",
-                "ac93538cc28a11e4b948c42c0303b893",
-                "c701b004606111e79eed28b2bdacf51c"
-            ],
-            "password": "pbkdf2_sha256$20000$jM7dUmGxuQLJ$U+yjhA3kPS22LY0kozEwHg7ceLb+JuB9suhwnAXzPeU=",
-            "surname": "",
-            "user_permissions": [],
-            "username": "neonion-admin@fu-berlin.de"
-        },
-        "model": "accounts.user",
-        "pk": 2
+    "model": "accounts.user",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "email": "neonion-admin@fu-berlin.de",
+      "groups": [],
+      "hidden_documents": [],
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": true,
+      "joined": "2014-12-22T14:12:17.516Z",
+      "last_login": "2018-02-24T22:05:53.793Z",
+      "name": "",
+      "owned_documents": [
+        "196a22383c1b11e7a52628b2bdacf51c",
+        "ac93538cc28a11e4b948c42c0303b893",
+        "c701b004606111e79eed28b2bdacf51c"
+      ],
+      "password": "pbkdf2_sha256$20000$jM7dUmGxuQLJ$U+yjhA3kPS22LY0kozEwHg7ceLb+JuB9suhwnAXzPeU=",
+      "surname": "",
+      "user_permissions": [],
+      "username": "neonion-admin@fu-berlin.de"
     },
-    {
-        "fields": {
-            "comment": "",
-            "concept_set": null,
-            "documents": [
-                "196a22383c1b11e7a52628b2bdacf51c",
-                "4e41bee6c28111e4b236c42c0303b893",
-                "688cea47c27f11e494e4c42c0303b893",
-                "71219f0819ef11e8a4c828b2bdacf51c",
-                "ac93538cc28a11e4b948c42c0303b893",
-                "ba07e20ac28311e4a5bec42c0303b893",
-                "c701b004606111e79eed28b2bdacf51c"
-            ],
-            "name": "Public",
-            "owner": 1
-        },
-        "model": "accounts.workinggroup",
-        "pk": 1
+    "model": "accounts.user",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "comment": "",
+      "concept_set": null,
+      "documents": [
+        "196a22383c1b11e7a52628b2bdacf51c",
+        "4e41bee6c28111e4b236c42c0303b893",
+        "688cea47c27f11e494e4c42c0303b893",
+        "71219f0819ef11e8a4c828b2bdacf51c",
+        "ac93538cc28a11e4b948c42c0303b893",
+        "ba07e20ac28311e4a5bec42c0303b893",
+        "c701b004606111e79eed28b2bdacf51c"
+      ],
+      "name": "Public",
+      "owner": 1
     },
-    {
-        "fields": {
-            "date_joined": "2018-02-24",
-            "group": 1,
-            "invite_reason": "",
-            "permissions": [],
-            "user": 1
-        },
-        "model": "accounts.membership",
-        "pk": 1
+    "model": "accounts.workinggroup",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "date_joined": "2018-02-24",
+      "group": 1,
+      "invite_reason": "",
+      "permissions": [],
+      "user": 1
     },
-    {
-        "fields": {
-            "date_joined": "2018-02-24",
-            "group": 1,
-            "invite_reason": "",
-            "permissions": [],
-            "user": 2
-        },
-        "model": "accounts.membership",
-        "pk": 2
-    }
+    "model": "accounts.membership",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "date_joined": "2018-02-24",
+      "group": 1,
+      "invite_reason": "",
+      "permissions": [],
+      "user": 2
+    },
+    "model": "accounts.membership",
+    "pk": 2
+  }
 ]
