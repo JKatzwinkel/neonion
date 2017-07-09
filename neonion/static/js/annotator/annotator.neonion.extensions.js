@@ -388,7 +388,8 @@
 
         factory.search = function (type, searchText, index) {
             var url = scope.options.lookup.prefix + scope.options.lookup.urls.search +
-                "/" + encodeURI(index) + "/" + encodeURI(type) + "/" + encodeURI(searchText);
+                "/" + encodeURI(type) + "/" + encodeURI(searchText);
+            console.log(url);
             return $.getJSON(url);
         };
 

@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -9,7 +10,11 @@ from pyelasticsearch import ElasticSearch, bulk_chunks
 from pyelasticsearch.exceptions import IndexAlreadyExistsError, BulkError, ElasticHttpError, ElasticHttpNotFoundError
 
 from common.knowledge.provider import Provider
+from common.knowledge.client import WikidataClient
+from common.knowledge.wikidata.provider import Wikidata
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 @login_required
 @require_POST
@@ -59,3 +64,13 @@ def entity_search(request, index, type, term):
     # call search method from provider
     provider = Provider(settings.ELASTICSEARCH_URL)
     return JsonResponse(provider.search(term, type, index), safe=False)
+
+@login_required
+@require_GET
+def entity_lookup(request, type, term):
+    logger.info(u'supposed to lookup up "{}" ({})'.format(term, type))
+    wikidataClient = WikidataClient()
+    result = wikidataClient.search(term, type)
+    logger.info(result)
+    return JsonResponse(result,safe=False)
+

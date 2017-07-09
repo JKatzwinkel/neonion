@@ -20,4 +20,7 @@ urlpatterns = [
     # ElasticSearch proxy
     url(r'^es/search/(?P<index>.+)/(?P<type>.+)/(?P<term>.+)$', 'api.views.entity_search'),
     url(r'^es/import/(?P<index>.+)/(?P<type>.+)$', 'api.views.entity_bulk_import'),
+
+    # wikidata remote search
+    url(r'^wikidata/search/(?P<type>.+)/(?P<term>.+)$', 'api.views.entity_lookup'),
 ]

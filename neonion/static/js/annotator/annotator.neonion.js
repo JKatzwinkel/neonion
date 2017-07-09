@@ -201,7 +201,7 @@
                 'pointAndLightRelations'
             ],
             lookup: {
-                prefix: "/api/es/",
+                prefix: "/api/wikidata/",
                 urls: {
                     search: "search"
                 }
