@@ -125,4 +125,11 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
             }
         };
 
+        /**
+         * Do semantic recommendations stuff.
+         */
+        $scope.checkForSuggestions = function() {
+            console.log("alright");
+        };
+
     }]);
