@@ -199,7 +199,7 @@ ENDPOINT_UPDATE = 'http://localhost:8080/openrdf-sesame/repositories/neonion/sta
 NER_SERVICE_ENABLED = False
 NER_SERVICE_URL = 'http://localhost:6000'
 
-#LOGGING_CONFIG 
+#LOGGING_CONFIG
 KIBANA_URL = 'http://127.0.0.1:5601'
 USER_LOGGING_ENABLED = False
 LOGGING = {
@@ -239,6 +239,10 @@ LOGGING = {
         'store': {
             'handlers': ['console'],
             'level': 'DEBUG',
-        }
+        },
+        'api.views': {
+          'handlers': ['console'],
+          'level': 'INFO',
+          }
     }
 }

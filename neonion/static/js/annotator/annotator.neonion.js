@@ -49,6 +49,7 @@
                         this.adder.html(this.templates.emptyAdder);
                         break;
                 }
+                console.log('annotationModeChanged '+mode);
                 this.annotator.publish("annotationModeChanged");
             }
             return this.editorState.annotationMode;
@@ -393,7 +394,7 @@
         },
 
         handleLinkedAnnotationEvent: function (annotation, eventType) {
-
+            console.log('linked annotation event');
             if (eventType == this.annotationEvents.created) {
                 this.linkedAnnotations.push(annotation);
                 if (this.annotator.plugins.Store) {
@@ -475,6 +476,7 @@
         beforeAnnotationCreated: function (annotation) {
             // neonion specific sub-field
             annotation['neonion'] = {};
+            console.log('about to create annotation! yay!');
 
             // prepare annotation according current annotation mode
             switch (this.editorState.annotationMode) {
@@ -781,10 +783,14 @@
              * @returns {boolean}
              */
             getMotivationEquals: function (annotation, motivation) {
+                return this.getMotivation(annotation) == motivation;
+            },
+
+            getMotivation: function(annotation) {
                 if (annotation.hasOwnProperty("oa") && annotation.oa.hasOwnProperty("motivatedBy")) {
-                    return annotation['oa']['motivatedBy'] == motivation;
+                    return annotation['oa']['motivatedBy'];
                 }
-                return false;
+                return "";
             },
 
             isLinkedAnnotation: function (annotation) {

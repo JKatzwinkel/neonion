@@ -101,6 +101,7 @@ neonionApp.controller('AnnotatorCtrl', ['$scope', '$cookies', '$location', '$sce
                 .then($scope.getGroup)
                 .then($scope.getConceptSet)
                 .then(function() {
+                    console.log($scope.conceptSet.concepts);
                     $scope.annotator.plugins.neonion.conceptSet($scope.conceptSet.concepts);
                 });
         };

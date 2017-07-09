@@ -139,6 +139,7 @@
          * @returns {{left: string, right: string}}
          */
         factory.getSurroundedContent = function (annotation, annotator) {
+            console.log('lol');
             var length = 70;
             var node, contentLeft = '', contentRight = '';
             // left
@@ -148,6 +149,7 @@
                     node = node.previousSibling;
                     // prepend extracted text
                     contentLeft = $(node).text() + contentLeft;
+                    console.log(contentLeft);
                 }
                 else {
                     node = node.parentNode;
@@ -239,7 +241,7 @@
                 submit: factory.submitEditorEntityField
             });
 
-            // replace filed with custom content
+            // replace field with custom content
             $(field).children((":first")).replaceWith(
                 "<div class='resource-controls'>" + factory.templates.cancelItem + "</div>" +
                 "<form id='resource-form'>" + factory.templates.searchItem + "</form>" +
@@ -303,6 +305,8 @@
         };
 
         factory.submitEditorEntityField = function (field, annotation) {
+            console.log('submit editor entity field');
+            console.log('annotation motivation: '+scope.helper.getMotivation(annotation));
             if (scope.helper.getMotivationEquals(annotation, scope.oa.motivation.classifying) ||
                 scope.helper.getMotivationEquals(annotation, scope.oa.motivation.identifying)) {
                 // add extra information from identified resource
@@ -316,6 +320,8 @@
         };
 
         factory.loadEditorEntityField = function (field, annotation) {
+            console.log('load editor entity field');
+            console.log('annotation motivation: '+scope.helper.getMotivation(annotation));
             if (scope.helper.getMotivationEquals(annotation, scope.oa.motivation.classifying) ||
                 scope.helper.getMotivationEquals(annotation, scope.oa.motivation.identifying)) {
                 $(field).show();
