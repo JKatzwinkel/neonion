@@ -36,7 +36,7 @@ neonionApp.controller('GroupListCtrl', ['$scope', 'GroupService', 'UserService',
             }
 
             $scope.queryConceptSets = function () {
-                return ConceptSetService.query(function (data) {
+                return ConceptSetService.resource.query(function (data) {
                     $scope.conceptSets = data;
                 }).$promise;
             }
