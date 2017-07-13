@@ -80,6 +80,18 @@ neonionApp.factory('AnnotatorService', [function () {
         });
     };
 
+    factory.getDocumentId = function() {
+        var annotations = factory.getAnnotationObjects();
+
+        var documentIds = $.map(annotations, function(annotation){
+           console.log("annotation uri: "+annotation.uri);
+           return annotation.uri;
+        });
+        console.log('documentId: '+documentIds);
+        return documentIds[0];
+    }
+
+
     /**
      * Returns a list of annotation objects filtered by the user.
      * @param userId
