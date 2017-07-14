@@ -47,7 +47,7 @@ neonionApp.controller('ConceptSetDetailCtrl', ['$scope', 'ConceptSetService', 'C
             };
 
             $scope.createConceptSet = function () {
-                $scope.conceptSet = new ConceptSetService({
+                $scope.conceptSet = new ConceptSetService.resource({
                     label: "",
                     comment: "",
                     concepts: []
@@ -55,13 +55,13 @@ neonionApp.controller('ConceptSetDetailCtrl', ['$scope', 'ConceptSetService', 'C
             };
 
             $scope.getConceptSet = function (id) {
-                return ConceptSetService.get({id: id}, function (data) {
+                return ConceptSetService.resource.get({id: id}, function (data) {
                     $scope.conceptSet = data;
                 }).$promise;
             };
 
             $scope.queryConcepts = function () {
-                return ConceptService.resource.query(function (data) {
+                return ConceptService. query(function (data) {
                     $scope.concepts = data;
                     $scope.updateLists();
                 }).$promise;

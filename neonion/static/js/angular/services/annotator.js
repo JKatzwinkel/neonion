@@ -160,10 +160,10 @@ neonionApp.factory('AnnotatorService', [function () {
             }).indexOf(user);
             var showAnnotation = idx !== -1 ? factory.contributors[idx].showAnnotation : true;
             var lastAnnotation = factory.getLastAnnotation(user);
-            var isoUpated = lastAnnotation.updated ? lastAnnotation.updated : new Date().toISOString();
+            var isoUpdated = lastAnnotation.updated ? lastAnnotation.updated : new Date().toISOString();
             items.push({
                 user: user, // creator of annotation
-                updated: isoUpated, // date when annotation was updated
+                updated: isoUpdated, // date when annotation was updated
                 showAnnotation: showAnnotation,
                 color: "hsla( " + factory.makeColor(factory.hashCode(user) % colors, colors) + ", 50%, 75%, 1 )"
             });
