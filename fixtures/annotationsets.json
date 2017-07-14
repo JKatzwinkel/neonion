@@ -183,5 +183,68 @@
     },
     "model": "annotationsets.conceptset",
     "pk": "default"
+  },
+  {
+    "fields": {
+      "comment": "Domain-specific concept set for Apparatus journal documents.",
+      "concepts": [
+        "person",
+        "institution",
+        "film"
+      ],
+      "label": "Apparatus"
+    },
+    "model": "annotationsets.conceptset",
+    "pk": "apparatus"
+  },
+  {
+    "fields": {
+      "comment": "A filmographic piece of work",
+      "properties": [
+      ],
+      "linked_concepts": [
+        "wikidata_film"
+      ],
+      "label": "Film"
+    },
+    "model": "annotationsets.concept",
+    "pk": "film"
+  },
+  {
+    "fields": {
+      "comment": "wikidata film item",
+      "endpoint": "https://www.wikidata.org",
+      "custom_query": null,
+      "linked_type": "https://www.wikidata.org/wiki/Q11424",
+      "retrieved_at": null,
+      "label": "Film@Wikidata",
+      "provider_class": ""
+    },
+    "model": "annotationsets.linkedconcept",
+    "pk": "wikidata_film"
+  },
+  {
+    "fields": {
+      "comment": "director of a filmographic work of art",
+      "linked_properties": [
+        "wikidata_film_director"
+      ],
+      "range": [
+        "person"
+      ],
+      "inverse_property": null,
+      "label": "director"
+    },
+    "model": "annotationsets.property",
+    "pk": "film_director"
+  },
+  {
+    "fields": {
+      "comment": "wikidata film director property",
+      "linked_property": "https://www.wikidata.org/wiki/Property:P57",
+      "label": "FilmDirector@Wikidata"
+    },
+    "model": "annotationsets.linkedproperty",
+    "pk": "wikidata_film_director"
   }
 ]
