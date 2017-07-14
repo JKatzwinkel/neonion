@@ -12,9 +12,8 @@ neonionApp.factory('ConceptSetService', ['$resource',
                 }
             );
 
-            factory.conceptSets = factory.resource.query(function(data){
-               return data;
-            });
+            factory.conceptSets = factory.resource.query();
+            console.log(factory.conceptSets);
 
 
             return factory;
