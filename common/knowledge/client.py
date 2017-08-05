@@ -24,6 +24,7 @@ def map_result(item):
         "descr": item.get('description',''),
         "label": item.get('label',''),
         "id": item.get('id', ''),
+        "uri": item.get('concepturi', ''),
         "aliases": item.get('aliases', [])
     }
 
