@@ -201,6 +201,7 @@
     "fields": {
       "comment": "A filmographic piece of work",
       "properties": [
+        "film_director"
       ],
       "linked_concepts": [
         "wikidata_film"
