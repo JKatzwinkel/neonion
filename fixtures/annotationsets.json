@@ -190,13 +190,39 @@
       "concepts": [
         "person",
         "institution",
-        "film"
+        "film",
+				"location"
       ],
       "label": "Apparatus"
     },
     "model": "annotationsets.conceptset",
     "pk": "apparatus"
   },
+	{
+		"fields": {
+			"comment": "A physcal location",
+			"properties": [],
+			"linked_concepts": [
+				"wikidata_location"
+			],
+			"label": "Location"
+		},
+		"model": "annotationsets.concept",
+		"pk": "location"
+	},
+	{
+		"fields": {
+			"comment": "wikidata location item",
+			"endpoint": "https://www.wikidata.org",
+			"custom_query": null,
+			"linked_type": "https://www.wikidata.org/wiki/Q17334923",
+			"retrieved_at": null,
+			"label": "Location@Wikidata",
+			"provider_class": ""
+		},
+		"model": "annotationsets.linkedconcept",
+		"pk": "wikidata_location"
+	},
   {
     "fields": {
       "comment": "A filmographic piece of work",
