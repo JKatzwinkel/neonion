@@ -203,7 +203,7 @@
 			"comment": "A physcal location",
 			"properties": [],
 			"linked_concepts": [
-				"wikidata_location"
+				"wikidata_geo_region"
 			],
 			"label": "Location"
 		},
@@ -212,16 +212,16 @@
 	},
 	{
 		"fields": {
-			"comment": "wikidata location item",
+			"comment": "wikidata geographic region item",
 			"endpoint": "https://www.wikidata.org",
 			"custom_query": null,
-			"linked_type": "https://www.wikidata.org/wiki/Q17334923",
+			"linked_type": "https://www.wikidata.org/wiki/QQ82794",
 			"retrieved_at": null,
-			"label": "Location@Wikidata",
+			"label": "GeographicRegion@Wikidata",
 			"provider_class": ""
 		},
 		"model": "annotationsets.linkedconcept",
-		"pk": "wikidata_location"
+		"pk": "wikidata_geo_region"
 	},
   {
     "fields": {
