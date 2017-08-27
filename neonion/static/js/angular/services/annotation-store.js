@@ -5,7 +5,7 @@ neonionApp.factory('AnnotationStoreService', ['$resource',
                 {
                     'search': {
                         method: 'GET',
-                        params: {limit: 999999},
+                        params: {limit: 200},
                         isArray: true,
                         cache: true,
                         url: '/store/search',
