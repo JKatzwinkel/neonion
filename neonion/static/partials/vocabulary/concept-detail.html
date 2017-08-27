@@ -44,6 +44,15 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="control-label" for="linked_type">Linked Types</label>
+                    <input type="text" class="form-control" id="linked_type" placeholder="ID of linked type"
+                           ng-model="concept.linked_concepts" autocomplete="off" readonly="true">
+                </div>
+            </div>
+        </div>
         <ng-include src="'/static/partials/vocabulary/multiselect.html'"></ng-include>
     </fieldset>
 </form>
