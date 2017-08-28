@@ -33,6 +33,10 @@ class PropertyViewSet(viewsets.ModelViewSet):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
 
+# ViewSets for linkedproperties.
+class LinkedPropertyViewSet(viewsets.ModelViewSet):
+    queryset = LinkedProperty.objects.all()
+    serializer_class = LinkedPropertySerializer
 
 # ViewSets for concepts.
 class ConceptViewSet(viewsets.ModelViewSet):
