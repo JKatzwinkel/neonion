@@ -238,4 +238,7 @@ def annotated_statements(request, document_pk):
     statements = annotated_statements_as_json(params, document_pk)
     return JsonResponse(statements, safe=False)
 
+def implicit_statements(request, document_pk):
+    params = dict(request.GET)
+    raise NotImplementedError('view is not implemented yet')
 
