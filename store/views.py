@@ -16,8 +16,10 @@ from common.uri import generate_uri, generate_urn
 from common.vocab import neonion, OpenAnnotation
 from store.decorators import require_group_permission
 from documents.models import Document
+from annotationsets.models import Concept, LinkedConcept, Property, LinkedProperty
 from logging.annotatorLogger import *
 
+from django.shortcuts import get_object_or_404
 
 es = ElasticSearch(settings.ELASTICSEARCH_URL)
 ANNOTATION_TYPE = 'annotation'
@@ -215,24 +217,34 @@ class SearchView(generics.GenericAPIView):
             return JsonResponse(convert_es_to_list(response), safe=False)
 
 
+
+
+def retrieve(request, group_pk, document_pk):
+    params = dict(request.GET)
+    offset = params.pop("offset", 0)
+    size = params.pop("limit", PAGE_SIZE)
+    params['permissions.read'] = group_pk
+    params['uri'] = document_pk
+    #params['oa.motivatedBy'] = 'oa:linking'
+    print(params)
+
+    try:
+        query = get_filter_query(params)
+        response = es.search(query, index=settings.ELASTICSEARCH_INDEX,
+                             doc_type=ANNOTATION_TYPE, es_from=offset, size=size)
+        res = convert_es_to_dict(response)
+        print('results: ', len(res['dict']))
+        return res
+    except:
+        return None
+
+
 class StatementListView(APIView):
 
     @require_group_permission
     def get(self, request, group_pk, document_pk):
-        params = dict(request.GET)
-        offset = params.pop("offset", 0)
-        size = params.pop("limit", PAGE_SIZE)
-        params['permissions.read'] = group_pk
-        params['uri'] = document_pk
-        #params['oa.motivatedBy'] = 'oa:linking'
-        print(params)
-
         try:
-            query = get_filter_query(params)
-            response = es.search(query, index=settings.ELASTICSEARCH_INDEX,
-                                 doc_type=ANNOTATION_TYPE, es_from=offset, size=size)
-            results = convert_es_to_dict(response)
-            print('{} fucking items!'.format(results['total']))
+            results = retrieve(request, group_pk, document_pk)
 
             predicates = [anno for anno in results['dict'].values() if anno['oa']['motivatedBy'] == 'oa:linking']
 
@@ -242,10 +254,72 @@ class StatementListView(APIView):
                 "object": results['dict'].get(anno['oa']['hasTarget']['hasSelector']['target'])
             } for anno in predicates]
 
-
         except exceptions.ElasticHttpNotFoundError:
             return JsonResponse(empty_result())
         except:
+            return HttpResponse(status=500)
+        else:
+            return JsonResponse(statements, safe=False)
+
+
+def resolve_linked_concepts(classifiedAs):
+    concept_id = classifiedAs.split('/')[-1]
+    print(concept_id)
+    concept = get_object_or_404(Concept, pk=concept_id)
+    for linked_concept in concept.linked_concepts.all():
+        link_conc_id = linked_concept.linked_type
+        # TODO
+        return link_conc_id.split('/')[-1]
+
+class GroupedStatementsView(APIView):
+
+    @require_group_permission
+    def get(self, request, group_pk, document_pk):
+        try:
+            results = retrieve(request, group_pk, document_pk)
+
+            entities = [anno for anno in results['dict'].values() if anno['oa']['motivatedBy'] in ['oa:identifying', 'oa:classifying']]
+            predicates = [anno for anno in results['dict'].values() if anno['oa']['motivatedBy'] == 'oa:linking']
+
+            statements = {}
+            for item in entities:
+                body = item['oa']['hasBody']
+                item_id = item['oa']['@id']
+                itempage = statements.get(item_id, {})
+                if body.get('identifiedAs'):
+                    itempage['item_page'] = body.get('identifiedAs')
+                itempage['aliases'] = itempage.get('aliases', []) + [body.get('label', '')]
+
+                properties = itempage.get('properties', {})
+                item_type = resolve_linked_concepts(body.get('classifiedAs', ''))
+                properties['P31'] = properties.get('P31', []) + [item_type]
+
+                itempage['properties'] = properties
+                statements[item_id] = itempage
+
+            for pred in predicates:
+                item_id = pred['oa']['hasTarget']['hasSelector']['source']
+                obj_id = pred['oa']['hasTarget']['hasSelector']['target']
+                itempage = statements.get(item_id, {})
+                item_properties = itempage.get('properties', {})
+
+                property = pred['oa']['hasBody']['relation']
+                prop_id = property.split('/')[-1]
+                p = get_object_or_404(Property, pk=prop_id)
+                for linked_prop in p.linked_properties.all():
+                    link_prop_id = linked_prop.linked_property.split(':')[-1]
+                    item_properties[link_prop_id] = item_properties.get(link_prop_id, []) + [obj_id]
+
+                itempage['properties'] = item_properties
+                statements[item_id] = itempage
+
+
+
+        except exceptions.ElasticHttpNotFoundError:
+            return JsonResponse(empty_result())
+        except Exception as e:
+            print('shit!')
+            print(e.message)
             return HttpResponse(status=500)
         else:
             return JsonResponse(statements, safe=False)
