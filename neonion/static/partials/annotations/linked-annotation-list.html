@@ -1,0 +1,16 @@
+<table class="table gap-top">
+    <thead>
+        <tr>
+            <th>Subject</th>
+            <th>Relation</th>
+            <th>Object</th>
+        </tr>
+    </thead>
+    <tbody ng-controller="AnnotationListCtrl" ng-cloak>
+        <tr ng-repeat="statement in statements" >
+            <td> {{ statement.oa.hasTarget.hasSelector.source }}  </td>
+            <td> <strong>{{ statement.neonion.viewer.predicateLabel }}</strong></td>
+            <td> {{ statement.oa.hasTarget.hasSelector.target }} </td>
+        </tr>
+    </tbody>
+</table>

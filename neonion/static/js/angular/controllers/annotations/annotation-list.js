@@ -6,6 +6,7 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$filter', 'CommonService
         $scope.pageNum = 0;
         $scope.stepSize = 50;
         $scope.annotations = [];
+        $scope.statements = [];
 
         $scope.exportFields = {
             baseFields : function() {
@@ -54,6 +55,10 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$filter', 'CommonService
             }).$promise;
         };
 
+        $scope.queryStatements = function () {
+            $scope.statements = $scope.linkedAnnotations();
+        };
+
         $scope.queryAnnotations = function (pageNum) {
             pageNum = pageNum | 0;
             return AnnotationStoreService.search($scope.getQueryParams(pageNum), function (annotations) {
@@ -78,14 +83,23 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$filter', 'CommonService
             $scope.download(annotations, $scope.exportFields.highlightFields(), format, "highlights_");
         };
 
-        $scope.downloadConceptsAndStatements = function (format) {
+        $scope.linkedAnnotations = function () {
             // filter for concept annotations
             var annotations = $filter('filterByConceptAnnotation')($scope.annotations)
                 .filter($scope.filterConceptAnnotations);
+            console.log('number of concept annotations: '+annotations.length);
+            // filter for linked annotations - only export linked annotations that are relevant
+            var linkedAnnotations = $filter('filterByLinkedAnnotation')($scope.annotations);
+            console.log('number of linked  annotations: '+linkedAnnotations.length);
 
-            // filter for linked annotations - only export linked annotations that are relevent
-            var linkedAnnotations = $filter('filterByLinkedAnnotation')($scope.annotations)
-                // check if the subject is present in the array of annotations
+            /*var statements = linkedAnnotations.map(function(annotation){
+                return {
+                    "subject": {},
+                    "predicate": annotation,
+                    "object": {}
+                };
+            });*/
+                /*// check if the subject is present in the array of annotations
                 .filter(function (linkage) {
                     return annotations.some(function (annotation) {
                         return annotation['oa']['@id'] == linkage['oa']['hasTarget']['hasSelector']['source'];
@@ -96,10 +110,23 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$filter', 'CommonService
                     return annotations.some(function (annotation) {
                         return annotation['oa']['@id'] == linkage['oa']['hasTarget']['hasSelector']['target'];
                     });
-                });
+                });*/
+            console.log('number of linked annotations: '+linkedAnnotations.length);
+            return linkedAnnotations;
+        };
 
-            $scope.download(annotations.concat(linkedAnnotations), 
+        //$scope.linkedAnnotation()
+
+        $scope.downloadConceptsAndStatements = function (format) {
+            // filter for concept annotations
+            var annotations = $filter('filterByConceptAnnotation')($scope.annotations)
+                .filter($scope.filterConceptAnnotations);
+            // filter for linked annotations
+            var linkedAnnotations = $scope.linkedAnnotations();
+
+            $scope.download(annotations.concat(linkedAnnotations),
                 $scope.exportFields.graph(), format, "knowledge_");
+
         };
 
         $scope.download = function (data, properties, format, filePrefix) {
@@ -161,6 +188,7 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$filter', 'CommonService
         $scope.queryGroupNames()
             .then($scope.queryDocumentTitles)
             .then($scope.queryCurrentUser)
-            .then($scope.queryAnnotations);
+            .then($scope.queryAnnotations)
+            .then($scope.queryStatements);
     }
 ]);
