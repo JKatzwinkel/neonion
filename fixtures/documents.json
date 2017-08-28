@@ -143,7 +143,8 @@
       "creator":"Natascha Drubek"
     },
     "model": "documents.document",
-    "pk": "196a22383c1b11e7a52628b2bdacf51c"
+    "pk": "196a22383c1b11e7a52628b2bdacf51c",
+    "concept_set": "apparatus"
   },
   {
     "fields": {
@@ -158,7 +159,8 @@
       "url": "https://www.wikidata.org/wiki/Q36403083"
     },
     "model": "documents.document",
-    "pk": "c701b004606111e79eed28b2bdacf51c"
+    "pk": "c701b004606111e79eed28b2bdacf51c",
+    "concept_set": "apparatus"
   },
   {
     "fields": {
@@ -173,6 +175,7 @@
       "url": "https://www.wikidata.org/wiki/Q38056798"
     },
     "model": "documents.document",
-    "pk": "d564a8468b9411e7a27b28b2bdacf51c"
+    "pk": "d564a8468b9411e7a27b28b2bdacf51c",
+    "concept_set": "apparatus"
   }
 ]

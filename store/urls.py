@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^(?P<group_pk>.+)/(?P<document_pk>.+)/annotations$', views.AnnotationListView.as_view()),
     url(r'^(?P<group_pk>.+)/(?P<document_pk>.+)/annotations/(?P<annotation_pk>.+)$', views.AnnotationDetailView.as_view()),
     url(r'^(?P<group_pk>.+)/(?P<document_pk>.+)/search$', views.SearchView.as_view()),
+    url(r'^(?P<group_pk>.+)/(?P<document_pk>.+)/statements$', views.StatementListView.as_view()),
 ]

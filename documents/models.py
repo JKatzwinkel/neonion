@@ -83,6 +83,10 @@ class Document(ResourceMixin, models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    # supposed to link to an open access resource providing this document
+    url = models.URLField('url', max_length=500, null=True)
+
+
     class_uri = neonion.DOCUMENT
 
     # assign manager

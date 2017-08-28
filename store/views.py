@@ -31,6 +31,13 @@ def convert_es_to_list(result_set):
         'rows': result_set
     }
 
+def convert_es_to_dict(result_set):
+    result_set = {item['_source']['oa']['@id']:item['_source'] for item in result_set['hits']['hits']}
+    return {
+        'total': len(result_set),
+        'dict': result_set
+    }
+
 
 def empty_result():
     return {'total': 0, 'rows': []}
@@ -206,6 +213,43 @@ class SearchView(generics.GenericAPIView):
             return HttpResponse(status=500)
         else:
             return JsonResponse(convert_es_to_list(response), safe=False)
+
+
+class StatementListView(APIView):
+
+    @require_group_permission
+    def get(self, request, group_pk, document_pk):
+        params = dict(request.GET)
+        offset = params.pop("offset", 0)
+        size = params.pop("limit", PAGE_SIZE)
+        params['permissions.read'] = group_pk
+        params['uri'] = document_pk
+        #params['oa.motivatedBy'] = 'oa:linking'
+        print(params)
+
+        try:
+            query = get_filter_query(params)
+            response = es.search(query, index=settings.ELASTICSEARCH_INDEX,
+                                 doc_type=ANNOTATION_TYPE, es_from=offset, size=size)
+            results = convert_es_to_dict(response)
+            print('{} fucking items!'.format(results['total']))
+
+            predicates = [anno for anno in results['dict'].values() if anno['oa']['motivatedBy'] == 'oa:linking']
+
+            statements = [{
+                "subject": results['dict'].get(anno['oa']['hasTarget']['hasSelector']['source']),
+                "property": anno,
+                "object": results['dict'].get(anno['oa']['hasTarget']['hasSelector']['target'])
+            } for anno in predicates]
+
+
+        except exceptions.ElasticHttpNotFoundError:
+            return JsonResponse(empty_result())
+        except:
+            return HttpResponse(status=500)
+        else:
+            return JsonResponse(statements, safe=False)
+
 
 
 @api_view(["GET"])
