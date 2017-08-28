@@ -266,10 +266,13 @@ def resolve_linked_concepts(classifiedAs):
     concept_id = classifiedAs.split('/')[-1]
     print(concept_id)
     concept = get_object_or_404(Concept, pk=concept_id)
-    for linked_concept in concept.linked_concepts.all():
-        link_conc_id = linked_concept.linked_type
-        # TODO
-        return link_conc_id.split('/')[-1]
+    return [linked_concept.linked_type.split('/')[-1] for linked_concept in concept.linked_concepts.all()]
+
+def resolve_linked_property(relation):
+    prop_pk = relation.split('/')[-1]
+    prop = get_object_or_404(Property, pk=prop_pk)
+    return [linked_prop.linked_property.split(':')[-1] for linked_prop in prop.linked_properties.all()]
+
 
 class GroupedStatementsView(APIView):
 
@@ -282,6 +285,8 @@ class GroupedStatementsView(APIView):
             predicates = [anno for anno in results['dict'].values() if anno['oa']['motivatedBy'] == 'oa:linking']
 
             statements = {}
+            res_qid = lambda pk: statements.get(pk, {}).get('item_page', pk).split('/')[-1]
+
             for item in entities:
                 body = item['oa']['hasBody']
                 item_id = item['oa']['@id']
@@ -291,8 +296,8 @@ class GroupedStatementsView(APIView):
                 itempage['aliases'] = itempage.get('aliases', []) + [body.get('label', '')]
 
                 properties = itempage.get('properties', {})
-                item_type = resolve_linked_concepts(body.get('classifiedAs', ''))
-                properties['P31'] = properties.get('P31', []) + [item_type]
+                for item_type in resolve_linked_concepts(body.get('classifiedAs', '')):
+                    properties['P31'] = properties.get('P31', []) + [item_type]
 
                 itempage['properties'] = properties
                 statements[item_id] = itempage
@@ -304,11 +309,8 @@ class GroupedStatementsView(APIView):
                 item_properties = itempage.get('properties', {})
 
                 property = pred['oa']['hasBody']['relation']
-                prop_id = property.split('/')[-1]
-                p = get_object_or_404(Property, pk=prop_id)
-                for linked_prop in p.linked_properties.all():
-                    link_prop_id = linked_prop.linked_property.split(':')[-1]
-                    item_properties[link_prop_id] = item_properties.get(link_prop_id, []) + [obj_id]
+                for link_prop_id in resolve_linked_property(property):
+                    item_properties[link_prop_id] = item_properties.get(link_prop_id, []) + [res_qid(obj_id)]
 
                 itempage['properties'] = item_properties
                 statements[item_id] = itempage
