@@ -315,6 +315,22 @@ class GroupedStatementsView(APIView):
                 itempage['properties'] = item_properties
                 statements[item_id] = itempage
 
+            # use wikidata itempage of this document
+            doc = get_object_or_404(Document, pk=document_pk)
+            if doc.url and wikiclient.is_itempage_url(doc.url):
+                item_id = doc.url.split('/')[-1]
+                itempage = statements.get(item_id, {})
+                itempage['item_page'] = item_id
+
+                properties = itempage.get('properties', {})
+                # technically, all annotated entities could be key subjects to this article
+                for item in entities:
+                    properties['P921'] = properties.get('P921', []) + [res_qid(item['oa']['@id'])]
+
+                itempage['properties'] = properties
+                statements[item_id] = itempage
+
+
 
 
         except exceptions.ElasticHttpNotFoundError:
