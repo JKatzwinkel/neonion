@@ -16,10 +16,12 @@ from common.uri import generate_uri, generate_urn
 from common.vocab import neonion, OpenAnnotation
 from store.decorators import require_group_permission
 from documents.models import Document
-from annotationsets.models import Concept, LinkedConcept, Property, LinkedProperty
+from annotationsets.models import Concept, Property
 from logging.annotatorLogger import *
 
 from django.shortcuts import get_object_or_404
+
+from common.knowledge import client as wikiclient
 
 es = ElasticSearch(settings.ELASTICSEARCH_URL)
 ANNOTATION_TYPE = 'annotation'
@@ -264,7 +266,6 @@ class StatementListView(APIView):
 
 def resolve_linked_concepts(classifiedAs):
     concept_id = classifiedAs.split('/')[-1]
-    print(concept_id)
     concept = get_object_or_404(Concept, pk=concept_id)
     return [linked_concept.linked_type.split('/')[-1] for linked_concept in concept.linked_concepts.all()]
 
@@ -284,52 +285,62 @@ class GroupedStatementsView(APIView):
             entities = [anno for anno in results['dict'].values() if anno['oa']['motivatedBy'] in ['oa:identifying', 'oa:classifying']]
             predicates = [anno for anno in results['dict'].values() if anno['oa']['motivatedBy'] == 'oa:linking']
 
+            # this os going to be some kind of tiny wikidata build from this document's annotations
             statements = {}
-            res_qid = lambda pk: statements.get(pk, {}).get('item_page', pk).split('/')[-1]
+            # this is a registry of wikidata itempage ids found in annotations
+            itempages = {}
 
+            # collect is_a (P31) predicates
             for item in entities:
                 body = item['oa']['hasBody']
-                item_id = item['oa']['@id']
+                item_id = body.get('identifiedAs').split('/')[-1] if 'identifiedAs' in body else item['oa']['@id']
                 itempage = statements.get(item_id, {})
-                if body.get('identifiedAs'):
-                    itempage['item_page'] = body.get('identifiedAs')
-                itempage['aliases'] = itempage.get('aliases', []) + [body.get('label', '')]
+                if 'identifiedAs' in body:
+                    itempage['item_page'] = item_id
+                    # register itempage id
+                    itempages[item['oa']['@id']] = item_id
+
+                itempage['aliases'] = itempage.get('aliases', []) + [item.get('quote') or body.get('label', '')]
 
                 properties = itempage.get('properties', {})
                 for item_type in resolve_linked_concepts(body.get('classifiedAs', '')):
                     properties['P31'] = properties.get('P31', []) + [item_type]
 
-                itempage['properties'] = properties
+                itempage['properties'] = {p:list(set(o)) for p,o in properties.items()}
                 statements[item_id] = itempage
 
+            # process actual statements (triples, 2 annotations connected by property)
             for pred in predicates:
                 item_id = pred['oa']['hasTarget']['hasSelector']['source']
                 obj_id = pred['oa']['hasTarget']['hasSelector']['target']
-                itempage = statements.get(item_id, {})
+                # switch annotation identifier with itempage id if necessary
+                item_id = itempages.get(item_id, item_id)
+                obj_id = itempages.get(obj_id, obj_id)
+                itempage = statements.get(item_id)
                 item_properties = itempage.get('properties', {})
 
                 property = pred['oa']['hasBody']['relation']
                 for link_prop_id in resolve_linked_property(property):
-                    item_properties[link_prop_id] = item_properties.get(link_prop_id, []) + [res_qid(obj_id)]
+                    item_properties[link_prop_id] = item_properties.get(link_prop_id, []) + [obj_id]
 
-                itempage['properties'] = item_properties
+                itempage['properties'] = {p:list(set(o)) for p,o in item_properties.items()}
                 statements[item_id] = itempage
 
             # use wikidata itempage of this document
             doc = get_object_or_404(Document, pk=document_pk)
             if doc.url and wikiclient.is_itempage_url(doc.url):
                 item_id = doc.url.split('/')[-1]
+                item_id = itempages.get(item_id, item_id)
                 itempage = statements.get(item_id, {})
                 itempage['item_page'] = item_id
 
                 properties = itempage.get('properties', {})
                 # technically, all annotated entities could be key subjects to this article
                 for item in entities:
-                    properties['P921'] = properties.get('P921', []) + [res_qid(item['oa']['@id'])]
+                    properties['P921'] = properties.get('P921', []) + [itempages.get(item['oa']['@id'])]
 
-                itempage['properties'] = properties
+                itempage['properties'] = {p:list(set(o)) for p,o in properties.items()}
                 statements[item_id] = itempage
-
 
 
 

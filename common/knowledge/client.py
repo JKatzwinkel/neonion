@@ -1,23 +1,21 @@
 import requests
-import json
+import re
 
 from urllib import urlencode
 
-# [{
-#     "viaf": ["113230702"],
-#     "birth": "1952-03-11",
-#     "descr": "English writer and humorist",
-#     "label": "Douglas Adams",
-#     "gnd": ["119033364"],
-#     "id": "Q42",
-#     "aliases": ["Douglas No\u00ebl Adams", "Douglas Noel Adams", "DNA", "Bop Ad"]
-# }]
-#https: // www.wikidata.org / w / api.php\?action\=wbsearchentities\ & language\=en\ & search\=Reinhard % 20
-#Heydrich\ & format\=json\ & uselang\=en
+from SPARQLWrapper import SPARQLWrapper, JSON
 
-
+_sparqli = SPARQLWrapper('https://query.wikidata.org/bigdata/namespace/wdq/sparql')
+_sparqli.setReturnFormat(JSON)
 
 query_temp = "https://www.wikidata.org/w/api.php?action=wbsearchentities&language=en&format=json&uselang=en&{}"
+
+_itempage_urlex = re.compile("https?://(www\.)?wikidata\.org/wiki/Q[0-9]+")
+
+
+def is_itempage_url(url):
+    return _itempage_urlex.match(url)
+
 
 def map_result(item):
     return {
@@ -36,5 +34,8 @@ class WikidataClient(object):
         if response.status_code == 200:
             return map(map_result, response.json()['search'])
 
+    def sparql(query, limit=500):
+        _sparqli.setQuery('select * where {{{}}} limit {}'.format(query, limit))
+        results = _sparqli.query().convert()
+        return results.get('results', {}).get('bindings', [])
 
-        #return [{"viaf": ["113230702"], "birth": "1952-03-11", "descr": "English writer and humorist", "label": "Douglas Adams", "gnd": ["119033364"], "id": "Q42", "aliases": ["Douglas No\u00ebl Adams", "Douglas Noel Adams", "DNA", "Bop Ad"]}]
