@@ -191,38 +191,39 @@
         "person",
         "institution",
         "film",
-				"location"
+        "location",
+        "academic_writing"
       ],
       "label": "Apparatus"
     },
     "model": "annotationsets.conceptset",
     "pk": "apparatus"
   },
-	{
-		"fields": {
-			"comment": "A physcal location",
-			"properties": [],
-			"linked_concepts": [
-				"wikidata_geo_region"
-			],
-			"label": "Location"
-		},
-		"model": "annotationsets.concept",
-		"pk": "location"
-	},
-	{
-		"fields": {
-			"comment": "wikidata geographic region item",
-			"endpoint": "https://www.wikidata.org",
-			"custom_query": null,
-			"linked_type": "https://www.wikidata.org/wiki/QQ82794",
-			"retrieved_at": null,
-			"label": "GeographicRegion@Wikidata",
-			"provider_class": ""
-		},
-		"model": "annotationsets.linkedconcept",
-		"pk": "wikidata_geo_region"
-	},
+  {
+    "fields": {
+      "comment": "A physcal location",
+      "properties": [],
+      "linked_concepts": [
+        "wikidata_geo_region"
+      ],
+      "label": "Location"
+    },
+    "model": "annotationsets.concept",
+    "pk": "location"
+  },
+  {
+    "fields": {
+      "comment": "wikidata geographic region item",
+      "endpoint": "https://www.wikidata.org",
+      "custom_query": null,
+      "linked_type": "https://www.wikidata.org/wiki/QQ82794",
+      "retrieved_at": null,
+      "label": "GeographicRegion@Wikidata",
+      "provider_class": ""
+    },
+    "model": "annotationsets.linkedconcept",
+    "pk": "wikidata_geo_region"
+  },
   {
     "fields": {
       "comment": "A filmographic piece of work",
@@ -273,5 +274,31 @@
     },
     "model": "annotationsets.linkedproperty",
     "pk": "wikidata_film_director"
+  },
+  {
+    "fields": {
+      "comment": "A written academic work",
+      "properties": [
+      ],
+      "linked_concepts": [
+        "wikidata_academic_writing"
+      ],
+      "label": "Academic Writing"
+    },
+    "model": "annotationsets.concept",
+    "pk": "academic_writing"
+  },
+  {
+    "fields": {
+      "comment": "wikidata item academic writing",
+      "endpoint": "https://www.wikidata.org",
+      "custom_query": null,
+      "linked_type": "https://www.wikidata.org/wiki/Q4119870",
+      "retrieved_at": null,
+      "label": "AcademicWriting@Wikidata",
+      "provider_class": ""
+    },
+    "model": "annotationsets.linkedconcept",
+    "pk": "wikidata_academic_writing"
   }
 ]
