@@ -11,7 +11,7 @@ from pyelasticsearch.exceptions import IndexAlreadyExistsError, BulkError, Elast
 
 from common.knowledge.provider import Provider
 from common.knowledge.client import WikidataClient
-from common.knowledge.wikidata.provider import Wikidata
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -73,4 +73,3 @@ def entity_lookup(request, type, term):
     result = wikidataClient.search(term, type)
     logger.info(result)
     return JsonResponse(result,safe=False)
-
