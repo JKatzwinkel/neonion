@@ -1,15 +1,32 @@
-<div class="row" ng-cloak>
-    <div id="document-frame" class="gap-top gap-bottom">
-        <div ng-switch on="document.attached_file.content_type">
-            <div ng-switch-when="text/plain">
-                <plain-render path="{{ getDocumentUrl() }}"/>
-            </div>
-            <div ng-switch-when="text/html">
-                <plain-render path="{{ getDocumentUrl() }}"/>
-            </div>
-            <div ng-switch-when="application/pdf">
-                <pdf-render path="{{ getDocumentUrl() }}"/>
-            </div>
+<div class="row" ng-init="tab = 1" ng-cloak>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav">
+                <li ng-class="{active:tab===1}"><a href="" ng-click="tab = 1">Document</a></li>
+                <li ng-class="{active:tab===2}"><a href="" ng-click="tab = 2">Semantic</a></li>
+            </ul>
         </div>
-    </div>
+    </nav>
+
+   <div class="wrapper" ng-switch="tab">
+        <div ng-switch-when="1">
+
+            <div id="document-frame" class="gap-top gap-bottom">
+                <div ng-switch on="document.attached_file.content_type">
+                    <div ng-switch-when="text/plain">
+                        <plain-render path="{{ getDocumentUrl() }}"/>
+                    </div>
+                    <div ng-switch-when="text/html">
+                        <plain-render path="{{ getDocumentUrl() }}"/>
+                    </div>
+                    <div ng-switch-when="application/pdf">
+                        <pdf-render path="{{ getDocumentUrl() }}"/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+       <div ng-switch-when="2">
+            <ng-include src="'/static/partials/annotations/document-statements-list.html'"></ng-include>
+       </div>
 </div>
