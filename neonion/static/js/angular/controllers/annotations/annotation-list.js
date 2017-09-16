@@ -1,6 +1,6 @@
 neonionApp.controller('AnnotationListCtrl', ['$scope', '$filter', 'CommonService', 'DocumentService',
-    'GroupService', 'AnnotationStoreService',
-    function ($scope, $filter, CommonService, DocumentService, GroupService, AnnotationStoreService) {
+    'GroupService', 'AnnotationStoreService', 'StatementService',
+    function ($scope, $filter, CommonService, DocumentService, GroupService, AnnotationStoreService, StatementService) {
         "use strict";
 
         $scope.pageNum = 0;
@@ -57,6 +57,18 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$filter', 'CommonService
 
         $scope.queryStatements = function () {
             $scope.statements = $scope.linkedAnnotations();
+        };
+
+        $scope.getDocumentStatements = function () {
+            var documentId = $scope.document.id;
+            var groupId = $scope.groupId;
+            console.log('I want statement list for doc '+documentId);
+
+            return StatementService.getStatements({docId: documentId, groupId: groupId},
+                function (statements) {
+                    $scope.statementsByEntity = statements;
+                }
+            ).$promise;
         };
 
         $scope.queryAnnotations = function (pageNum) {
@@ -189,6 +201,7 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$filter', 'CommonService
             .then($scope.queryDocumentTitles)
             .then($scope.queryCurrentUser)
             .then($scope.queryAnnotations)
+            .then($scope.getDocumentStatements)
             .then($scope.queryStatements);
     }
 ]);
