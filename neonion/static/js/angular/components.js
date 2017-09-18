@@ -25,6 +25,19 @@ angular.module('components', [])
         };
     })
 
+    // directive for list of statements extracted from a document
+    .directive('statements', function() {
+        return {
+            restrict: 'E',
+            scope: {
+                groupId: "@groupId",
+                documentId: "@documentId"
+            },
+            controller: 'AnnotationListCtrl',
+            templateUrl: '/static/partials/annotations/documents-statements-list.html'
+        };
+    })
+
     // directive to render a PDF document
     .directive('pdfRender', function () {
         return {
