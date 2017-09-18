@@ -1,14 +1,14 @@
-<div ng-controller="AnnotationListCtrl" ng-cloak>
+<div ng-app="neonionApp" ng-controller="AnnotationListCtrl">
     <h2>{{document.title}}</h2>
 
     <div ng-repeat="(item_page, statements) in statementsByEntity">
         <h4>
             <a href="http://wikidata.org/wiki/{{ item_page }}">{{ item_page }}</a>
-            <span ng-hide="{{ !statements.aliases }}">({{ statements.aliases | first }})</span>
+            <span ng-hide="{{ !statements.aliases.length }}">({{ statements.aliases | first }})</span>
 
         </h4>
-        <div ng-repeat=" alias in statements.aliases " ng-show="{{statements.aliases.length > 1}}">
-            {{alias}}
+        <div ng-repeat="alias in statements.aliases | unique" ng-hide="{{ statements.aliases.length < 2 }}">
+            {{ alias }}
         </div>
         <table class="table">
             <thead>
