@@ -13,20 +13,19 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Predicate</th>
-                    <th>Value</th>
+                    <th width="50%">Predicate</th>
+                    <th style="text-align:right">Value</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr  ng-repeat="(property, values) in statements.properties">
-
+            <tbody ng-repeat="(property, values) in statements.properties">
+                <tr ng-repeat="value in values">
 
                     <td>
                         {{ property }}
                     </td>
 
-                    <td>
-                        {{ values }}
+                    <td style="text-align:right">
+                        {{ value }}
                     </td>
 
                     <!--<td class="col-md-6">
