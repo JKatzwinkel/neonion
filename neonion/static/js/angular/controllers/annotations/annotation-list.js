@@ -1,6 +1,6 @@
-neonionApp.controller('AnnotationListCtrl', ['$scope', '$filter', 'CommonService', 'DocumentService',
+neonionApp.controller('AnnotationListCtrl', ['$scope', '$http', '$filter', 'CommonService', 'DocumentService',
     'GroupService', 'AnnotationStoreService', 'StatementService',
-    function ($scope, $filter, CommonService, DocumentService, GroupService, AnnotationStoreService, StatementService) {
+    function ($scope, $http, $filter, CommonService, DocumentService, GroupService, AnnotationStoreService, StatementService) {
         "use strict";
 
         $scope.pageNum = 0;
@@ -203,5 +203,31 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$filter', 'CommonService
             .then($scope.queryAnnotations)
             .then($scope.getDocumentStatements)
             .then($scope.queryStatements);
+
+
+        $scope.whatever = "FFFF...";
+        // try and call some place
+        var promise = $http.get('/api/wikidata/search/film/theresienstadt');
+
+        promise.then(
+            function(payload) {
+                $scope.whatever = payload.status;
+                console.log('ASKDJFLSKJDFKL SJFDSIDFJ SAKDFJLKSAJFDKL SAJFDKLJ');
+                console.log(payload);
+                console.log(payload.data);
+            },
+            function(errorPayload) {
+                console.log('FUCK STH WENT WRONGGG!');
+                console.log(errorPayload.data);
+                console.log(errorPayload.status);
+                console.log(errorPayload.headers);
+            });
+
+        $scope.$watch('whatever', function(o, n) {
+
+            console.log('FUCKFUCKFUCKFUKU');
+
+        }, true);
+
     }
 ]);
