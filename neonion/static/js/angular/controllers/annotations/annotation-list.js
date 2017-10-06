@@ -233,6 +233,14 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$http', '$filter', 'Comm
             return $scope.filterCommonFields(annotation);
         };
 
+        $scope.buttonColor = function(exists) {
+            if (exists < 1) {
+                return "orange";
+            } else {
+                return "green";
+            }
+        }
+
         // execute promise chain
         $scope.queryGroupNames()
             .then($scope.queryDocumentTitles)

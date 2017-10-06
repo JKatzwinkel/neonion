@@ -1,6 +1,5 @@
 <div ng-app="neonionApp" ng-controller="AnnotationListCtrl">
     <h2>{{document.title}}</h2>
-    <h3>{{whatever}}</h3>
 
     <div ng-repeat="(item_page, statements) in statementsByEntity">
         <h4>
@@ -30,10 +29,10 @@
                         {{ value }}
                     </td>
 
-                    <td  style="text-align:right">
+                    <td  style="text-align:right;color:{{ buttonColor(status.exists) }};">
                         <div ng-switch on="status.exists">
-                            <span ng-switch-when="0" class="fa fa-upload"></span>
-                            <span ng-switch-when="1" class="fa fa-check-square-o"></span>
+                            <button ng-switch-when="0" class="fa fa-upload" title="Add statement to item page"></button>
+                            <button ng-switch-when="1" class="fa fa-check-square-o" title="Confirm statement on item page and add bibliographic source"></button>
                         </div>
                     </td>
 
