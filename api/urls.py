@@ -24,4 +24,5 @@ urlpatterns = [
 
     # wikidata remote search
     url(r'^wikidata/search/(?P<type>.+)/(?P<term>.+)$', 'api.views.entity_lookup'),
+    url(r'^wikidata/statement/(?P<sid>.+)/(?P<pid>.+)$', 'api.views.predicate_lookup'),
 ]

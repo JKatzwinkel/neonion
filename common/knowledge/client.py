@@ -34,7 +34,7 @@ class WikidataClient(object):
         if response.status_code == 200:
             return map(map_result, response.json()['search'])
 
-    def sparql(query, limit=500):
+    def sparql(self, query, limit=500):
         _sparqli.setQuery('select * where {{{}}} limit {}'.format(query, limit))
         results = _sparqli.query().convert()
         return results.get('results', {}).get('bindings', [])

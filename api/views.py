@@ -73,3 +73,15 @@ def entity_lookup(request, type, term):
     result = wikidataClient.search(term, type)
     logger.info(result)
     return JsonResponse(result,safe=False)
+
+@require_GET
+def predicate_lookup(request, sid, pid):
+    wikidataClient = WikidataClient()
+    result = wikidataClient.sparql('wd:{} wdt:{} ?o'.format(sid, pid))
+    result = [o.get('o', {}) for o in result]
+    result = [o.get('value', '') for o in result if o.get('type') == 'uri']
+    result = [u.split('/')[-1] for u in result]
+    return JsonResponse({
+        "subject": sid,
+        "property": pid,
+        "objects":result}, safe=False)
