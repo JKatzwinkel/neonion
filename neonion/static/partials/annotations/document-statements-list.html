@@ -16,6 +16,7 @@
                 <tr>
                     <th width="50%">Predicate</th>
                     <th style="text-align:right">Value</th>
+                    <th style="text-align:right">Action</th>
                 </tr>
             </thead>
             <tbody ng-repeat="(property, values) in statements.properties">
@@ -27,6 +28,13 @@
 
                     <td style="text-align:right">
                         {{ value }}
+                    </td>
+
+                    <td  style="text-align:right">
+                        <div ng-switch on="status.exists">
+                            <span ng-switch-when="0" class="fa fa-upload"></span>
+                            <span ng-switch-when="1" class="fa fa-check-square-o"></span>
+                        </div>
                     </td>
 
                     <!--<td class="col-md-6">
