@@ -159,6 +159,14 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
          */
         $scope.checkForSuggestions = function() {
             console.log("alright");
+
         };
+
+        $scope.getEntities = function() {
+            var items = $.map(AnnotatorService.getAnnotationObjects(), function(elem){
+                return elem.oa.hasBody.identifiedAs;
+            });
+            return items;
+        }
 
     }]);

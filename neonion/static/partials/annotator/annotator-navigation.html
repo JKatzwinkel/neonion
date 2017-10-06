@@ -98,7 +98,7 @@
 
             <ul class="dropdown-menu dropdown-menu-side">
                 <li class="dropdown-header">Detected entities</li>
-                <li class="dropdown-item" ng-repeat="entity in getEntities()" >
+                <li class="dropdown-item" ng-repeat="entity in getEntities() | unique" >
                     <a href="{{ entity }}">
                         <span>{{ entity.split('/').pop() }}</span>
                     </a>
