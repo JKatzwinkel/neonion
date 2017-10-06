@@ -19,7 +19,7 @@
                 </tr>
             </thead>
             <tbody ng-repeat="(property, values) in statements.properties">
-                <tr ng-repeat="value in values">
+                <tr ng-repeat="(value, status) in values">
 
                     <td>
                         {{ property }}

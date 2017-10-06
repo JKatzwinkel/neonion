@@ -304,9 +304,11 @@ class GroupedStatementsView(APIView):
 
                 properties = itempage.get('properties', {})
                 for item_type in resolve_linked_concepts(body.get('classifiedAs', '')):
-                    properties['P31'] = properties.get('P31', []) + [item_type]
+                    properties['P31'] = properties.get('P31', {})
+                    properties['P31'][item_type] = {}
 
-                itempage['properties'] = {p:list(set(o)) for p,o in properties.items()}
+                itempage['properties'] = {p:{x:{} for x in set(o)} for p,o in properties.items()}
+
                 statements[item_id] = itempage
 
             # process actual statements (triples, 2 annotations connected by property)
@@ -321,9 +323,10 @@ class GroupedStatementsView(APIView):
 
                 property = pred['oa']['hasBody']['relation']
                 for link_prop_id in resolve_linked_property(property):
-                    item_properties[link_prop_id] = item_properties.get(link_prop_id, []) + [obj_id]
+                    item_properties[link_prop_id] = item_properties.get(link_prop_id, {})
+                    item_properties[link_prop_id][obj_id] = {}
 
-                itempage['properties'] = {p:list(set(o)) for p,o in item_properties.items()}
+                itempage['properties'] = {p:{x:{} for x in set(o)} for p,o in item_properties.items()}
                 statements[item_id] = itempage
 
             # use wikidata itempage of this document
@@ -337,9 +340,10 @@ class GroupedStatementsView(APIView):
                 properties = itempage.get('properties', {})
                 # technically, all annotated entities could be key subjects to this article
                 for item in entities:
-                    properties['P921'] = properties.get('P921', []) + [itempages.get(item['oa']['@id'])]
+                    properties['P921'] = properties.get('P921', {})
+                    properties['P921'][itempages.get(item['oa']['@id'])] = {}
 
-                itempage['properties'] = {p:list(set(o)) for p,o in properties.items()}
+                itempage['properties'] = {p:{x:{} for x in set(o)} for p,o in properties.items()}
                 statements[item_id] = itempage
 
 
