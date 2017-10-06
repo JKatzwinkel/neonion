@@ -3,19 +3,12 @@
  */
 neonionApp.factory('StatementService', ['$resource',
     function ($resource) {
-        return $resource('/store/:groupId/:docId/groupedstatements',
-            {docId: '@docId', groupId: '@groupId'},
-            {
-                'getStatements': {
-                    method: 'GET',
-                    params: {},
-                    cache: true,
-                    transformResponse: function(data, header) {
-                        var jsonData = angular.fromJson(data);
-                        return jsonData;
-                    }
-                }
-            }
-        );
+        return {
+            statements: $resource('/store/:groupId/:docId/groupedstatements',
+                {docId: '@docId', groupId: '@groupId'}
+            ),
+            proofs: $resource('/api/wikidata/statement/:sId/:pId/',
+                {sId: '@sId', pId: '@pId'})
+        };
     }]
 );
