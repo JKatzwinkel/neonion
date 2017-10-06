@@ -64,12 +64,49 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$http', '$filter', 'Comm
             var groupId = $scope.groupId;
             console.log('I want statement list for doc '+documentId);
 
-            return StatementService.getStatements({docId: documentId, groupId: groupId},
+            return StatementService.statements.get({docId: documentId, groupId: groupId},
                 function (statements) {
+                    // copy to controller scope
                     $scope.statementsByEntity = statements;
                 }
             ).$promise;
         };
+
+        $scope.validateStatements = function() {
+            for (var subj in $scope.statementsByEntity) {
+
+                var statements = $scope.statementsByEntity[subj];
+
+                if (statements.properties) {
+
+                    for (var prop in statements.properties) {
+
+                        StatementService.proofs.get({sId: subj, pId: prop},
+                            function(result) {
+
+                                var subj = result.subject;
+                                var prop = result.property;
+
+                                var values = $scope.statementsByEntity[subj].properties[prop];
+                                for (var value in values) {
+                                    var status = values[value];
+                                    if (result.objects.includes(value)) {
+                                        status.exists = 1;
+                                    } else {
+                                        status.exists = 0;
+                                    }
+                                }
+
+                            }
+                        );
+
+                    }
+
+                }
+
+            }
+        }
+
 
         $scope.queryAnnotations = function (pageNum) {
             pageNum = pageNum | 0;
@@ -202,32 +239,25 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$http', '$filter', 'Comm
             .then($scope.queryCurrentUser)
             .then($scope.queryAnnotations)
             .then($scope.getDocumentStatements)
-            .then($scope.queryStatements);
+            .then($scope.validateStatements);
 
 
-        $scope.whatever = "FFFF...";
+        /*$scope.whatever = "FFFF...";
         // try and call some place
-        var promise = $http.get('/api/wikidata/search/film/theresienstadt');
+        var promise = $http.get('/api/wikidata/statement/Q86059/P31');
 
         promise.then(
             function(payload) {
                 $scope.whatever = payload.status;
-                console.log('ASKDJFLSKJDFKL SJFDSIDFJ SAKDFJLKSAJFDKL SAJFDKLJ');
-                console.log(payload);
-                console.log(payload.data);
+                $scope.statementsByEntity['Q86059'].properties['P31']["Q5"].exists = 1;
             },
             function(errorPayload) {
                 console.log('FUCK STH WENT WRONGGG!');
                 console.log(errorPayload.data);
                 console.log(errorPayload.status);
                 console.log(errorPayload.headers);
-            });
+            });*/
 
-        $scope.$watch('whatever', function(o, n) {
-
-            console.log('FUCKFUCKFUCKFUKU');
-
-        }, true);
 
     }
 ]);
