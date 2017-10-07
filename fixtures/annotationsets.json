@@ -192,7 +192,7 @@
         "institution",
         "film",
         "location",
-        "academic_writing"
+        "publication"
       ],
       "label": "Apparatus"
     },
@@ -201,7 +201,16 @@
   },
   {
     "fields": {
-      "comment": "A physcal location",
+      "comment": "Recommendations",
+      "concepts": [],
+      "label": "recommendations"
+    },
+    "model": "annotationsets.conceptset",
+    "pk": "recommendations"
+  },
+  {
+    "fields": {
+      "comment": "A physical location",
       "properties": [],
       "linked_concepts": [
         "wikidata_geo_region"
@@ -275,30 +284,51 @@
     "model": "annotationsets.linkedproperty",
     "pk": "wikidata_film_director"
   },
-  {
+   {
     "fields": {
-      "comment": "A written academic work",
-      "properties": [
-      ],
-      "linked_concepts": [
-        "wikidata_academic_writing"
-      ],
-      "label": "Academic Writing"
+      "comment": "author of a publication",
+      "linked_properties": ["wikidata_author"],
+      "range": ["person"],
+      "inverse_property": null,
+      "label": "author"
     },
-    "model": "annotationsets.concept",
-    "pk": "academic_writing"
+    "model": "annotationsets.property",
+    "pk": "author"
   },
   {
     "fields": {
-      "comment": "wikidata item academic writing",
+      "comment": "wikidata property author",
+      "linked_property": "https://www.wikidata.org/wiki/Property:P57",
+      "label": "Author@Wikidata"
+    },
+    "model": "annotationsets.linkedproperty",
+    "pk": "wikidata_author_property"
+  },
+  {
+    "fields": {
+      "comment": "Output of the act of publishing",
+      "properties": [
+        "author"
+      ],
+      "linked_concepts": [
+        "wikidata_publication"
+      ],
+      "label": "Publication"
+    },
+    "model": "annotationsets.concept",
+    "pk": "publication"
+  },
+  {
+    "fields": {
+      "comment": "wikidata item publication",
       "endpoint": "https://www.wikidata.org",
       "custom_query": null,
-      "linked_type": "https://www.wikidata.org/wiki/Q4119870",
+      "linked_type": "https://www.wikidata.org/wiki/Q732577",
       "retrieved_at": null,
-      "label": "AcademicWriting@Wikidata",
+      "label": "Publication@Wikidata",
       "provider_class": ""
     },
     "model": "annotationsets.linkedconcept",
-    "pk": "wikidata_academic_writing"
+    "pk": "wikidata_publication"
   }
 ]
