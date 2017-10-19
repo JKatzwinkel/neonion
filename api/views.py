@@ -1,5 +1,6 @@
-import json
 import logging
+
+import json
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -10,7 +11,8 @@ from pyelasticsearch import ElasticSearch, bulk_chunks
 from pyelasticsearch.exceptions import IndexAlreadyExistsError, BulkError, ElasticHttpError, ElasticHttpNotFoundError
 
 from common.knowledge.provider import Provider
-from common.knowledge.client import WikidataClient
+from common.knowledge.client import WikidataClient, snoopy_request
+from common.knowledge.testrecommender import TestRecommender
 
 
 logger = logging.getLogger(__name__)
@@ -85,3 +87,16 @@ def predicate_lookup(request, sid, pid):
         "subject": sid,
         "property": pid,
         "objects":result}, safe=False)
+
+@require_GET
+def recommend_entity_obj_types(request, sid):
+    recommender = TestRecommender()
+    result = recommender.entity_rec(sid)
+    return JsonResponse(result)
+
+@require_GET
+def recommend_properties_properties(request, properties_separated_by_semicolon):
+    properties = properties_separated_by_semicolon.split(';')
+    # TODO validate arguments
+    data = json.loads(snoopy_request(properties))
+    return JsonResponse(data)
