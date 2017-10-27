@@ -1,9 +1,9 @@
 /**
  * AnnotatorMenu controller
  */
-neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$cookies',
-    'cookieKeys', 'systemSettings', 'AnnotatorService', 'ConceptSetService',
-    function ($scope, $window, $location, $cookies, cookieKeys, systemSettings, AnnotatorService, ConceptSetService) {
+neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$cookies', '$interval',
+    'cookieKeys', 'systemSettings', 'AnnotatorService', 'ConceptSetService', 'StatementService',
+    function ($scope, $window, $location, $cookies, $interval, cookieKeys, systemSettings, AnnotatorService, ConceptSetService, StatementService) {
         "use strict";
 
         $scope.systemSettings = systemSettings;
@@ -42,6 +42,8 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
                 }
             }
         };
+
+
 
         /**
          * Handle home click.
@@ -117,7 +119,7 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
 
             return ConceptSetService.resource.getDeep({id: conceptSetId},
                 function (conceptSet) {
-                    $scope.conceptSet = conceptSet
+                    $scope.conceptSet = conceptSet;
                 }).$promise;
         };
 
@@ -127,12 +129,52 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
 
             ConceptSetService.resource.getDeep({id: conceptSetId},
                 function (conceptSet) {
-                    $scope.conceptSet = conceptSet
-                }).$promise.then(function(data){
+                    $scope.conceptSet = conceptSet;
+                }).$promise.then(function(){
                     AnnotatorService.annotator().plugins.neonion.conceptSet($scope.conceptSet.concepts);
-                    $scope.document.$update($scope.return);
+                    //$scope.document.$update($scope.return);
             });
-        }
+        };
+
+        $scope.recommendations = undefined;
+        var recommender_job = $interval(function() {
+                console.log("I AM FUCKING DOING MY FRICKNIG SCHEDULED JOB");
+                StatementService.recommendations.get({},
+                    function(results){
+                        $scope.recommendations_incoming = results.concepts.length;
+                    }).$promise.then($scope.loadRecommendations);
+            },
+            30000);
+
+        $scope.loadRecommendations = function() {
+            return ConceptSetService.resource.getDeep({id: "recommendations"},
+                function(conceptSet){
+                    $scope.recommendations = conceptSet;
+                }
+            ).$promise;
+        };
+
+        $scope.loadRecommendations();
+        $scope.getConceptSet();
+
+        $scope.curateRecommendation = function(concept, keep) {
+            console.log("concept "+concept.label);
+                var recCS = ConceptSetService.resource.get({id:"recommendations"}, function() {
+                    var ix = recCS.concepts.indexOf(concept.id);
+                    recCS.concepts.splice(ix, 1);
+                    recCS.$update().then($scope.loadRecommendations);
+                });
+            if (keep) {
+                var cs = ConceptSetService.resource.get({id:$scope.document.concept_set}, function() {
+                    cs.concepts.push(concept.id);
+                    cs.$update().then(
+                        function(){$scope.switchConceptSet($scope.document.concept_set)}
+                    );
+                });
+
+            }
+        };
+
 
 
         /**
