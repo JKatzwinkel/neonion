@@ -61,7 +61,7 @@ neonionApp.controller('ConceptSetDetailCtrl', ['$scope', 'ConceptSetService', 'C
             };
 
             $scope.queryConcepts = function () {
-                return ConceptService. query(function (data) {
+                return ConceptService.query(function (data) {
                     $scope.concepts = data;
                     $scope.updateLists();
                 }).$promise;

@@ -83,6 +83,7 @@ neonionApp.controller('AnnotatorCtrl', ['$scope', '$rootScope', '$cookies', '$lo
                     $scope.annotator = angular.element("#document-body").data("annotator");
                     AnnotatorService.annotator($scope.annotator);
                     $scope.annotator
+                        .subscribe("annotationEditorSubmit", $scope.retrieveRecommendations)
                         .subscribe("annotationCreated", $scope.handleAnnotationEvent)
                         .subscribe("annotationUpdated", $scope.handleAnnotationEvent)
                         .subscribe("annotationDeleted", $scope.handleAnnotationEvent)
@@ -114,6 +115,28 @@ neonionApp.controller('AnnotatorCtrl', ['$scope', '$rootScope', '$cookies', '$lo
                 AnnotatorService.colorizeAnnotationByMotivation(annotation);
             });
         };
+
+        $scope.retrieveRecommendations = function(event) {
+            var annotation = event.annotation;
+            console.log("annotation that has been created:");
+            console.log(annotation);
+            if (annotation.oa.hasBody.identifiedAs) {
+
+                console.log(annotation.oa.hasBody.identifiedAs);
+                // subject ID
+                var sid = annotation.oa.hasBody.identifiedAs.split("/").pop();
+                // ID of concept used for classification
+                var cid = annotation.oa.hasBody.classifiedAs.split("/").pop();
+                console.log(sid);
+
+                StatementService.recommended_types.get({sId: sid, cId: cid},
+                    function(recommendations){
+                        console.log("recommendations: "+recommendations.types.length)
+                    }).$promise;
+
+            }
+            //
+        }
 
         var unbindRenderTemplateLoaded = $scope.$on('renderTemplateLoaded', function (event) {
 
