@@ -4,7 +4,7 @@ from common.mixins import ResourceMixin
 
 
 class LinkedProperty(ResourceMixin, models.Model):
-    # URI to the property in then external ontology
+    # URI to the property in the external ontology
     linked_property = models.URLField('linked_property', blank=False, max_length=300)
 
     class_uri = neonion.LINKED_PROPERTY
@@ -29,12 +29,15 @@ class Property(ResourceMixin, models.Model):
 
 class LinkedConcept(ResourceMixin, models.Model):
     endpoint = models.URLField('endpoint', null=True, blank=True, max_length=300)
-    # URI to the concept in then external ontology
+    # URI to the concept in the external ontology
     linked_type = models.URLField('linked_type', blank=False, max_length=300)
     # path to the class which implements the knowledge extraction provider
     provider_class = models.CharField('provider_class', null=True, blank=True, max_length=100)
     custom_query = models.CharField(null=True, blank=True, max_length=500)
     retrieved_at = models.DateTimeField(null=True, blank=True)
+
+    # P279 relatinos
+    super_types = models.ManyToManyField('self', blank=True)
 
     class_uri = neonion.LINKED_CONCEPT
 
