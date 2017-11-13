@@ -96,14 +96,29 @@
                 <i class="fa fa-info-circle" aria-hidden="true"> {{ recommendations_incoming }}</i>
             </a>
 
-            <ul class="dropdown-menu dropdown-menu-side">
-                <li class="dropdown-header">Concept Set Recommendations</li>
-                <li class="dropdown-item" ng-repeat="concept in recommendations.concepts | unique" >
-                    <span>{{ concept.label }}</span>
-                    <span ng-click="curateRecommendation(concept, true)">o</span>
-                    <span ng-click="curateRecommendation(concept, false)">x</span>
-                </li>
-            </ul>
+            <table class="dropdown-menu dropdown-menu-side recommendations recommendations-navbar">
+                <thead class="dropdown-header">
+                    <tr>
+                        <th width="70%">
+                            Concept Set Recommendations
+                        </th>
+                        <th width="15%" style="text-align:right"/>
+                        <th width="15%" style="text-align:right"/>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="recommendations-menu-entry" ng-repeat="concept in recommendations.concepts | unique" >
+                        <td title="{{ concept.comment }}" class="recommendations-menu-item">
+                            <b>{{ concept.label }}</b>
+                            <a href="{{ concept.linked_concepts[0].linked_type }}">
+                                 ({{ concept.id }})
+                            </a>
+                        </td>
+                        <td ng-click="curateRecommendation(concept, true)" class="fa fa-check-square-o recommendations-menu-action accept"/>
+                        <td ng-click="curateRecommendation(concept, false)" class="fa fa-trash recommendations-menu-action reject"/>
+                    </tr>
+                </tbody>
+            </table>
         </li>
     </ul>
 </nav>
