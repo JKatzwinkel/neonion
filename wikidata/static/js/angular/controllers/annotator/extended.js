@@ -5,9 +5,6 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	$scope.annotator = undefined;
 
 	console.log('hehehe');
-	//$scope.annotator.subscribe("annotationEditorSubmit", $scope.perform);
-	//console.log($scope.annotator);
-	//
 
 	$scope.ConceptRecommender = $resource('/wikidata/related/types/doc/:docId/concept/:conceptId',
 		{docId:'@docId',conceptId:'@conceptId'},
@@ -29,7 +26,11 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 
 
 	// actual vocabulary recommendations
-	$scope.recommendedTerms = {};
+	$scope.recommended = {};
+
+	$scope.recommendationCount = function() {
+		return Object.keys($scope.recommended).length;
+	}
 
 
 	$scope.updateRecommender = function(event) {
@@ -72,16 +73,23 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	    $scope.annotator = angular.element("#document-body").data("annotator");
 	    $scope.annotator.subscribe("annotationEditorSubmit", $scope.updateRecommender)
 											.subscribe("annotationDeleted", $scope.updateRecommender);
-			/*$scope.Recommendations.query({},
-				function(result) {
-					$scope.recommendedTerms = result;
-				});*/
 			$interval.cancel(initialHookJob);
 		}
 	}, 5000);
 
 
+	// reifies the recommended vocabulary term itself (linked_property e.g.) and extracts 
+	// the linked resource (linked_type e.g.) so that it can be accessed in html template
+	$scope.resolveLinkedResource = function(term) {
+		LinkedConceptService.get({id: term.linked_concept},
+			function(linked_concept){
+				//$scope.recommended[term.id].
+				term.linked_resource = linked_concept.linked_type;
+			}
+		);
+	}
 
+	// gets label and description for a linkedconcept linked to a recommendation and updates recommendation accordingly
 	$scope.resolveLabels = function(term) {
 		LinkedConceptService.get({id: term.linked_concept},
 			function(linked_concept){
@@ -113,29 +121,37 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	};
 
 
-	var recommendationLabelResolverJob = $timeout(function() {
-		console.log('running scheduled label resolving job');
+	// schedule job that frequently resolves labels of current recommendations, if necessary
+	var recommendationLabelResolverJob = $interval(function() {
+			Object.keys($scope.recommended).forEach(function(id){
+				var term = $scope.recommended[id];
+				if (term.label.length < 1) {
+					$scope.resolveLabels(term);
+				} 
+				else if (!term.linked_resource) {
+					$scope.resolveLinkedResource(term);
 
-		for (var i=0; i<$scope.recommendedTerms.length; i++) {
-
-			var term = $scope.recommendedTerms[i];
-
-			if (term.label.length < 1) {
-				$scope.resolveLabels(term);
+				}
 			}
-
-		}
+		);
 	}, 6000);
 
-	$scope.Recommendations.query({},
-		function(result) {
-			console.log('yeah');
-			$scope.recommendedTerms = result;
-		}).$promise.then($scope.bla);
+  var checkforRecommendationsJob = $interval(function() {
+		$scope.Recommendations.query({},
+			function(results) {
+				console.log('yeah');
+				results.forEach(function(result){
+					if (!$scope.recommended.hasOwnProperty(result.id)) {
+						$scope.recommended[result.id] = result;
+					}
+				});
+			})
+	}, 10000);
 
 	$scope.$on('$destroy', function() {
 		console.log('kill job');
 		$interval.cancel(recommendationLabelResolverJob);
+		$interval.cancel(checkforRecommendationsJob);
 	});
 
 }]);

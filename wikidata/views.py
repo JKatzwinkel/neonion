@@ -246,8 +246,8 @@ def resolve_item_labels(request, item_id):
     params = dict(request.GET)
     item = wiki.item(item_id)
     return JsonResponse({
-        'label': wiki.label(item),
-        'description': wiki.description(item)
+        'label': wiki.label(item) or "",
+        'description': wiki.description(item) or ""
         })
 
 

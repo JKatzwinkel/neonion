@@ -124,11 +124,37 @@
         <li class="dropdown" ng-controller="AnnotatorCtrlExtended">
           <a id="nav-recommendations" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expaned="false"
                  data-tooltip="Recommendations" ng-click="openRecommendations()">
-            <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
-
+            <i class="fa fa-lightbulb-o" aria-hidden="true" style="color:red"></i>
+						<span class="nav-bar-indicator" style="font-size:xx-small" ng-hide="recommendationCount() < 1">
+              {{ recommendationCount() }}
+            </span>
           </a>
 
 
+            <table class="dropdown-menu dropdown-menu-side recommendations recommendations-navbar">
+                <thead class="dropdown-header">
+                    <tr>
+                        <th width="70%">
+                            Concept Set Recommendations
+                        </th>
+                        <th width="15%" style="text-align:right"/>
+                        <th width="15%" style="text-align:right"/>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="recommendations-menu-entry" ng-repeat="(id, recommendation) in recommended " >
+                        <td title="{{ recommendation.comment }}" class="recommendations-menu-item">
+                            <b>{{ recommendation.label }}</b>
+                            <a href="{{ recommendation.linked_resource }}">
+                                 ({{ recommendation.linked_resource.split('/').pop() }})
+                            </a>
+                            ({{ recommendation.confidence }})
+                        </td>
+                        <td ng-click="curateRecommendation(recommendation, true)" class="fa fa-check-square-o recommendations-menu-action accept"/>
+                        <td ng-click="curateRecommendation(recommendation, false)" class="fa fa-trash recommendations-menu-action reject"/>
+                    </tr>
+                </tbody>
+            </table>
         </li>
     </ul>
 </nav>

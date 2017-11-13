@@ -9941,3 +9941,35 @@ fieldset[disabled] .btn-secondary.focus {
 .annotator-hl-filtered.annotator-hl-concept {
   background-color: transparent;
 }
+
+
+
+/*
+==== Concept Set Recommendations Sidebar (nav) Menu ====
+ */
+.dropdown-menu.recommendations {
+  max-height: 500px;
+  overflow-y: scroll;
+}
+.dropdown-menu.recommendations .dropdown-header {
+  border-bottom: solid 1px #777777;
+}
+.recommendations-menu-entry:hover {
+  background-color: #ccc;
+}
+.recommendations-menu-item {
+  padding: 2px 5px 3px 5px;
+}
+.recommendations-menu-action {
+  cursor: pointer;
+  padding: 2px 5px 3px 5px;
+}
+.recommendations-menu-action.accept {
+  color: rgba(0, 124, 255, 0.3);
+}
+.recommendations-menu-action.reject {
+  color: #f39100;
+}
+.recommendations-menu-action:hover {
+  color: black;
+}
