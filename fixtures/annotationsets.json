@@ -1,198 +1,73 @@
 [
   {
     "fields": {
-      "comment": "To be brought to an end; be annulled or terminated",
-      "linked_properties": [],
-      "range": [
-        "date"
-      ],
-      "inverse_property": null,
-      "label": "dissolved"
-    },
-    "model": "annotationsets.property",
-    "pk": "dissolved"
-  },
-  {
-    "fields": {
-      "comment": "To establish or set up, especially with provision for continuing existence",
-      "linked_properties": [],
-      "range": [
-        "date"
-      ],
-      "inverse_property": null,
-      "label": "founded"
-    },
-    "model": "annotationsets.property",
-    "pk": "founded"
-  },
-  {
-    "fields": {
-      "comment": "",
-      "linked_properties": [],
-      "range": [
-        "person_function"
-      ],
-      "inverse_property": null,
-      "label": "has role"
-    },
-    "model": "annotationsets.property",
-    "pk": "has_role"
-  },
-  {
-    "fields": {
-      "comment": "",
-      "linked_properties": [],
-      "range": [
-        "person"
-      ],
-      "inverse_property": "member_of",
-      "label": "member"
-    },
-    "model": "annotationsets.property",
-    "pk": "member"
-  },
-  {
-    "fields": {
-      "comment": "",
-      "linked_properties": [],
-      "range": [
-        "consortium",
-        "institution"
-      ],
-      "inverse_property": "member",
-      "label": "member of"
-    },
-    "model": "annotationsets.property",
-    "pk": "member_of"
-  },
-  {
-    "fields": {
-      "comment": "",
-      "endpoint": "http://dbpedia.org/sparql",
-      "custom_query": null,
-      "linked_type": "http://dbpedia.org/ontology/Scientist",
-      "retrieved_at": "2015-08-18T09:16:49.992Z",
-      "label": "Person@DBpedia",
-      "provider_class": "common.knowledge.dbpedia.DBpedia"
-    },
-    "model": "annotationsets.linkedconcept",
-    "pk": "dbpedia_person"
-  },
-  {
-    "fields": {
       "comment": "",
       "endpoint": "https://www.wikidata.org",
       "custom_query": null,
-      "linked_type": "https://www.wikidata.org/wiki/Q178706",
-      "retrieved_at": null,
-      "label": "Institution@Wikidata",
-      "provider_class": ""
-    },
-    "model": "annotationsets.linkedconcept",
-    "pk": "wikidata_institution"
-  },
-  {
-    "fields": {
-      "comment": "",
-      "endpoint": "https://www.wikidata.org",
-      "custom_query": null,
-      "linked_type": "https://www.wikidata.org/wiki/Q5",
+      "linked_type": "https://www.wikidata.org/entity/Q5",
       "retrieved_at": null,
       "label": "Person@Wikidata",
       "provider_class": ""
     },
     "model": "annotationsets.linkedconcept",
-    "pk": "wikidata_person"
-  },
-  {
-    "fields": {
-      "comment": "A cooperative arrangement among groups or institutions",
-      "properties": [
-        "dissolved",
-        "founded",
-        "member"
-      ],
-      "linked_concepts": [],
-      "label": "Consortium"
-    },
-    "model": "annotationsets.concept",
-    "pk": "consortium"
-  },
-  {
-    "fields": {
-      "comment": "A particular point or period of time at which something happened or existed, or is expected to happen",
-      "properties": [],
-      "linked_concepts": [],
-      "label": "Date"
-    },
-    "model": "annotationsets.concept",
-    "pk": "date"
-  },
-  {
-    "fields": {
-      "comment": "An established organization or foundation, especially one dedicated to education, public service, or culture",
-      "properties": [
-        "dissolved",
-        "founded",
-        "member"
-      ],
-      "linked_concepts": [
-        "wikidata_institution"
-      ],
-      "label": "Institution"
-    },
-    "model": "annotationsets.concept",
-    "pk": "institution"
-  },
-  {
-    "fields": {
-      "comment": "An individual human being",
-      "properties": [
-        "has_role",
-        "member_of"
-      ],
-      "linked_concepts": [
-        "wikidata_person"
-      ],
-      "label": "Person"
-    },
-    "model": "annotationsets.concept",
-    "pk": "person"
+    "pk": "Q5"
   },
   {
     "fields": {
       "comment": "",
-      "properties": [],
-      "linked_concepts": [],
-      "label": "Person Function"
+      "endpoint": "https://www.wikidata.org",
+      "custom_query": null,
+      "linked_type": "https://www.wikidata.org/entity/Q11424",
+      "retrieved_at": null,
+      "label": "Film@Wikidata",
+      "provider_class": ""
+    },
+    "model": "annotationsets.linkedconcept",
+    "pk": "Q11424"
+  },
+   {
+    "fields": {
+      "comment": "A filmographic piece of work",
+      "properties": [
+      ],
+      "linked_concepts": [
+        "Q11424"
+      ],
+      "label": "Film"
     },
     "model": "annotationsets.concept",
-    "pk": "person_function"
+    "pk": "Q11424"
+  },
+    {
+    "fields": {
+      "comment": "An individual human being",
+      "properties": [
+      ],
+      "linked_concepts": [
+        "Q5"
+      ],
+      "label": "Person"
+    },
+    "model": "annotationsets.concept",
+    "pk": "Q5"
   },
   {
     "fields": {
-      "comment": "The default concept set for annotating documents",
+      "comment": "Default Concept Set.",
       "concepts": [
-        "consortium",
-        "date",
-        "institution",
-        "person",
-        "person_function"
+        "Q5"
       ],
       "label": "Default"
     },
     "model": "annotationsets.conceptset",
     "pk": "default"
   },
-  {
+   {
     "fields": {
       "comment": "Domain-specific concept set for Apparatus journal documents.",
       "concepts": [
-        "person",
-        "institution",
-        "film",
-        "location",
-        "publication"
+        "Q5",
+        "Q11424"
       ],
       "label": "Apparatus"
     },
@@ -210,125 +85,12 @@
   },
   {
     "fields": {
-      "comment": "A physical location",
-      "properties": [],
-      "linked_concepts": [
-        "wikidata_geo_region"
-      ],
-      "label": "Location"
+      "comment": "Declined Recommendations",
+      "concepts": [],
+      "label": "declined"
     },
-    "model": "annotationsets.concept",
-    "pk": "location"
-  },
-  {
-    "fields": {
-      "comment": "wikidata geographic region item",
-      "endpoint": "https://www.wikidata.org",
-      "custom_query": null,
-      "linked_type": "https://www.wikidata.org/wiki/QQ82794",
-      "retrieved_at": null,
-      "label": "GeographicRegion@Wikidata",
-      "provider_class": ""
-    },
-    "model": "annotationsets.linkedconcept",
-    "pk": "wikidata_geo_region"
-  },
-  {
-    "fields": {
-      "comment": "A filmographic piece of work",
-      "properties": [
-        "film_director"
-      ],
-      "linked_concepts": [
-        "wikidata_film"
-      ],
-      "label": "Film"
-    },
-    "model": "annotationsets.concept",
-    "pk": "film"
-  },
-  {
-    "fields": {
-      "comment": "wikidata film item",
-      "endpoint": "https://www.wikidata.org",
-      "custom_query": null,
-      "linked_type": "https://www.wikidata.org/wiki/Q11424",
-      "retrieved_at": null,
-      "label": "Film@Wikidata",
-      "provider_class": ""
-    },
-    "model": "annotationsets.linkedconcept",
-    "pk": "wikidata_film"
-  },
-  {
-    "fields": {
-      "comment": "director of a filmographic work of art",
-      "linked_properties": [
-        "wikidata_film_director"
-      ],
-      "range": [
-        "person"
-      ],
-      "inverse_property": null,
-      "label": "director"
-    },
-    "model": "annotationsets.property",
-    "pk": "film_director"
-  },
-  {
-    "fields": {
-      "comment": "wikidata film director property",
-      "linked_property": "https://www.wikidata.org/wiki/Property:P57",
-      "label": "FilmDirector@Wikidata"
-    },
-    "model": "annotationsets.linkedproperty",
-    "pk": "wikidata_film_director"
-  },
-   {
-    "fields": {
-      "comment": "author of a publication",
-      "linked_properties": ["wikidata_author"],
-      "range": ["person"],
-      "inverse_property": null,
-      "label": "author"
-    },
-    "model": "annotationsets.property",
-    "pk": "author"
-  },
-  {
-    "fields": {
-      "comment": "wikidata property author",
-      "linked_property": "https://www.wikidata.org/wiki/Property:P57",
-      "label": "Author@Wikidata"
-    },
-    "model": "annotationsets.linkedproperty",
-    "pk": "wikidata_author_property"
-  },
-  {
-    "fields": {
-      "comment": "Output of the act of publishing",
-      "properties": [
-        "author"
-      ],
-      "linked_concepts": [
-        "wikidata_publication"
-      ],
-      "label": "Publication"
-    },
-    "model": "annotationsets.concept",
-    "pk": "publication"
-  },
-  {
-    "fields": {
-      "comment": "wikidata item publication",
-      "endpoint": "https://www.wikidata.org",
-      "custom_query": null,
-      "linked_type": "https://www.wikidata.org/wiki/Q732577",
-      "retrieved_at": null,
-      "label": "Publication@Wikidata",
-      "provider_class": ""
-    },
-    "model": "annotationsets.linkedconcept",
-    "pk": "wikidata_publication"
+    "model": "annotationsets.conceptset",
+    "pk": "declined_recommendations"
   }
+  	
 ]
