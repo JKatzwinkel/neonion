@@ -1,5 +1,5 @@
 from documents.models import Document
-from annotationsets.models import ConceptSet, Concept, Property, LinkedConcept, LinkedProperty
+from annotationsets.models import ConceptSet, Concept, Property, LinkedConcept, LinkedProperty, PropertyConceptOccurrence
 from rest_framework import viewsets, status
 from accounts.models import User, WorkingGroup, Membership
 from rest_framework.decorators import detail_route, list_route
@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from api.serializers import UserSerializer, UserDetailedSerializer, WorkingGroupSerializer, \
     ConceptSetSerializer, ConceptSetDeepSerializer, \
     DocumentSerializer, DocumentDetailedSerializer, WorkingGroupDocumentSerializer, ConceptSerializer, \
-    PropertySerializer, LinkedConceptSerializer, LinkedPropertySerializer, MembershipSerializer
+    PropertySerializer, LinkedConceptSerializer, LinkedPropertySerializer, MembershipSerializer, PropertyConceptOccurrenceSerializer
 
 
 # ViewSets for document.
@@ -49,11 +49,15 @@ class ConceptSetViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         # allow a deep serialisation on retrieve
-        if self.action == 'retrieve' and 'deep' in self.request.query_params:
+        #self.action == 'retrieve' and
+        if 'deep' in self.request.query_params:
             return ConceptSetDeepSerializer
         else:
             return ConceptSetSerializer
 
+class PropertyConceptOccurrenceViewSet(viewsets.ModelViewSet):
+    queryset = PropertyConceptOccurrence.objects.all()
+    serializer_class = PropertyConceptOccurrenceSerializer
 
 # ViewSets for users.
 class UserViewSet(viewsets.ModelViewSet):

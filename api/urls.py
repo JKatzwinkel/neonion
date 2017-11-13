@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 from viewsets import UserViewSet, WorkingGroupViewSet, DocumentViewSet, ConceptSetViewSet, ConceptViewSet, \
-    PropertyViewSet, LinkedConceptViewSet, MembershipViewSet, LinkedPropertyViewSet
+    PropertyViewSet, LinkedConceptViewSet, MembershipViewSet, LinkedPropertyViewSet, PropertyConceptOccurrenceViewSet
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter(trailing_slash=False)
@@ -14,6 +14,7 @@ router.register(r'concepts', ConceptViewSet)
 router.register(r'linkedconcepts', LinkedConceptViewSet)
 router.register(r'properties', PropertyViewSet)
 router.register(r'linkedproperties', LinkedPropertyViewSet)
+router.register(r'occurrences', PropertyConceptOccurrenceViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

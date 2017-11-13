@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from accounts.models import User, WorkingGroup, Membership
 from documents.models import Document, File
-from annotationsets.models import ConceptSet, Concept, LinkedConcept, Property, LinkedProperty
+from annotationsets.models import ConceptSet, Concept, LinkedConcept, Property, LinkedProperty, PropertyConceptOccurrence
 
 
 # Serializers for file representation.
@@ -89,6 +89,11 @@ class LinkedConceptSerializer(serializers.ModelSerializer):
                   'custom_query', 'provider_class', 'retrieved_at')
         read_only_fields = ('retrieved_at',)
 
+
+class PropertyConceptOccurrenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PropertyConceptOccurrence
+        fields = ('id', 'concept', 'linked_property', 'linked_concept')
 
 # Serializers for concept representation.
 class ConceptSerializer(serializers.ModelSerializer):

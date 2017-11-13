@@ -48,3 +48,10 @@ class ConceptSet(ResourceMixin, models.Model):
     concepts = models.ManyToManyField("Concept", blank=True)
 
     class_uri = neonion.CONCEPT_SET
+
+
+class PropertyConceptOccurrence(models.Model):
+    id = models.AutoField(primary_key=True)
+    concept = models.ForeignKey('Concept')
+    linked_property = models.URLField('linked_property', blank=False, max_length=300)
+    linked_concept = models.URLField('linked_concept', blank=False, max_length=300)
