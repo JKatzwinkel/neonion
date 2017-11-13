@@ -22,3 +22,6 @@ __pycache__
 
 # ignore bash scrips
 *.sh
+
+# ignore migrations for now
+/**/migrations/*.py
