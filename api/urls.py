@@ -26,6 +26,9 @@ urlpatterns = [
     # wikidata remote search
     url(r'^wikidata/search/(?P<type>.+)/(?P<term>.+)$', 'api.views.entity_lookup'),
     url(r'^wikidata/statement/(?P<sid>.+)/(?P<pid>.+)$', 'api.views.predicate_lookup'),
-    url(r'^wikidata/recommend/entity/(?P<sid>.+)$', 'api.views.recommend_entity_obj_types'),
-    url(r'^wikidata/recommend/properties/(?P<properties_separated_by_semicolon>.+)$', 'api.views.recommend_properties_properties')
+    url(r'^wikidata/recommend/entity/(?P<cid>.+)/(?P<sid>.+)$', 'api.views.recommend_entity_obj_types'),
+    url(r'^wikidata/recommend/concepts', 'api.views.recommend_linked_concepts'),
+    url(r'^wikidata/recommend/properties$', 'api.views.recommend_linked_properties'),
+    url(r'^wikidata/recommend/properties/(?P<properties_separated_by_semicolon>.+)$', 'api.views.recommend_properties_properties'),
+    url(r'^wikidata/recommend$', 'api.views.recommend')
 ]

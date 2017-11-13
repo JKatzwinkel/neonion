@@ -272,7 +272,7 @@ def resolve_linked_concepts(classifiedAs):
 def resolve_linked_property(relation):
     prop_pk = relation.split('/')[-1]
     prop = get_object_or_404(Property, pk=prop_pk)
-    return [linked_prop.linked_property.split(':')[-1] for linked_prop in prop.linked_properties.all()]
+    return [linked_prop.linked_property.split('/')[-1] for linked_prop in prop.linked_properties.all()]
 
 
 class GroupedStatementsView(APIView):

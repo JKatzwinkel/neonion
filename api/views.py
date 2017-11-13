@@ -12,7 +12,7 @@ from pyelasticsearch.exceptions import IndexAlreadyExistsError, BulkError, Elast
 
 from common.knowledge.provider import Provider
 from common.knowledge.client import WikidataClient, snoopy_request
-from common.knowledge.testrecommender import TestRecommender
+from common.knowledge.testrecommender import TestRecommender, SimpleRecommender
 
 
 logger = logging.getLogger(__name__)
@@ -89,9 +89,9 @@ def predicate_lookup(request, sid, pid):
         "objects":result}, safe=False)
 
 @require_GET
-def recommend_entity_obj_types(request, sid):
-    recommender = TestRecommender()
-    result = recommender.entity_rec(sid)
+def recommend_entity_obj_types(request, cid, sid):
+    recommender = SimpleRecommender()
+    result = recommender.entity_rec(cid, sid)
     return JsonResponse(result)
 
 @require_GET
@@ -100,3 +100,23 @@ def recommend_properties_properties(request, properties_separated_by_semicolon):
     # TODO validate arguments
     data = json.loads(snoopy_request(properties))
     return JsonResponse(data)
+
+@require_GET
+def recommend_linked_concepts(request):
+    recommender = SimpleRecommender()
+    result = recommender.linked_concepts()
+    return JsonResponse(result)
+
+@require_GET
+def recommend_linked_properties(request):
+    recommender = SimpleRecommender()
+    result = recommender.linked_properties()
+    return JsonResponse(result)
+
+
+@require_GET
+def recommend(request):
+    recommender = SimpleRecommender()
+    recommendations = recommender.recommend()
+    return JsonResponse(recommendations)
+

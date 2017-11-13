@@ -8,7 +8,12 @@ neonionApp.factory('StatementService', ['$resource',
                 {docId: '@docId', groupId: '@groupId'}
             ),
             proofs: $resource('/api/wikidata/statement/:sId/:pId/',
-                {sId: '@sId', pId: '@pId'})
+                {sId: '@sId', pId: '@pId'}
+            ),
+            recommended_types: $resource('/api/wikidata/recommend/entity/:cId/:sId',
+                {cId: '@cId', sId: '@sId'}
+            ),
+            recommendations: $resource('/api/wikidata/recommend')
         };
     }]
 );

@@ -4,9 +4,9 @@
  * Annotator controller
  */
 neonionApp.controller('AnnotatorCtrl', ['$scope', '$rootScope', '$cookies', '$location', '$sce', 'cookieKeys',
-    'UserService', 'AnnotatorService', 'DocumentService', 'GroupService', 'ConceptSetService',
+    'UserService', 'AnnotatorService', 'DocumentService', 'GroupService', 'ConceptSetService', 'StatementService',
     function ($scope, $rootScope, $cookies, $location, $sce, cookieKeys, UserService, AnnotatorService,
-            DocumentService, GroupService, ConceptSetService) {
+            DocumentService, GroupService, ConceptSetService, StatementService) {
         "use strict";
 
         $scope.getDocument = function () {
