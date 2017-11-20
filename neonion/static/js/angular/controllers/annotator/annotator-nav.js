@@ -157,13 +157,18 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
         $scope.loadRecommendations();
         $scope.getConceptSet();
 
-        $scope.curateRecommendation = function(concept, keep) {
+        $scope.reviewRecommendation = function(concept, keep) {
             console.log("concept "+concept.label);
                 var recCS = ConceptSetService.resource.get({id:"recommendations"}, function() {
                     var ix = recCS.concepts.indexOf(concept.id);
                     recCS.concepts.splice(ix, 1);
                     recCS.$update().then($scope.loadRecommendations);
                 });
+                var declinedRecommendationsConceptSet = ConceptSetService.resource.get({id:"declined_recommendations"},
+                    function() {
+                        declinedRecommendationsConceptSet.concepts.push(concept.id);
+                        declinedRecommendationsConceptSet.$update();
+                    });
             if (keep) {
                 var cs = ConceptSetService.resource.get({id:$scope.document.concept_set}, function() {
                     cs.concepts.push(concept.id);
