@@ -11,16 +11,16 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$http', '$filter', 'Comm
         $scope.exportFields = {
             baseFields : function() {
                 return  [
-                    'oa.@id', 'oa.annotatedBy.mbox.@id', 'oa.motivatedBy', 'oa.annotatedAt', 
+                    'oa.@id', 'oa.annotatedBy.mbox.@id', 'oa.motivatedBy', 'oa.annotatedAt',
                     'oa.hasTarget.hasSource.@id', 'oa.hasTarget.hasSelector.conformsTo', 'oa.hasTarget.hasSelector.value',
                     'oa.hasBody.@type'
-                ];   
+                ];
             },
             commentFields: function() {
                 return $scope.exportFields.baseFields().concat(['oa.hasBody.chars']);
             },
             highlightFields: function() {
-                return $scope.exportFields.baseFields();  
+                return $scope.exportFields.baseFields();
             },
             graph: function() {
                 return $scope.exportFields.baseFields().concat([
@@ -81,31 +81,80 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$http', '$filter', 'Comm
 
                     for (var prop in statements.properties) {
 
-                        StatementService.proofs.get({sId: subj, pId: prop},
-                            function(result) {
+                        $scope.checkItemProperty(subj, prop);
 
-                                var subj = result.subject;
-                                var prop = result.property;
+                    }
+                }
+            }
+        };
 
-                                var values = $scope.statementsByEntity[subj].properties[prop];
-                                for (var value in values) {
-                                    var status = values[value];
-                                    if (result.objects.includes(value)) {
-                                        status.exists = 1;
-                                    } else {
-                                        status.exists = 0;
-                                    }
-                                }
+        $scope.checkItemProperty = function(subj, prop) {
+            // call service who issues sparql request in order to find all predicates for item and property
+            StatementService.proofs.get({sId: subj, pId: prop},
+                function(result) {
 
-                            }
-                        );
+                    var subj = result.subject;
+                    var prop = result.property;
 
+                    var values = $scope.statementsByEntity[subj].properties[prop];
+                    for (var obj in values) {
+                        var status = values[obj];
+                        if (result.objects.includes(obj)) {
+                            status.exists = 1;
+                            $scope.checkStatementReference(subj, prop, obj);
+                        } else {
+                            status.exists = 0;
+                        }
                     }
 
                 }
+            );
+        };
 
-            }
+        $scope.checkStatementReference = function(subj, prop, obj) {
+            console.log('checking reference', subj, prop, obj);
+            var sourceId = $scope.document.url.slice($scope.document.url.lastIndexOf('/') + 1);
+            StatementService.references.get({sId: subj, pId: prop, oId: obj, documentUrl: sourceId},
+                function (result) {
+                    console.log(result);
+                    var status = $scope.statementsByEntity[subj].properties[prop][obj];
+                    console.log('reference status: ',subj,prop,obj);
+                    if (result.datavalue) {
+                        status.confirmed = 1;
+                    } else {
+                        status.confirmed = 0;
+                    }
+                    console.log(status);
+                }
+            );
         }
+
+        $scope.contributeStatement = function(subj, prop, obj) {
+
+
+
+        };
+
+        $scope.contributeReference = function(subj, prop, obj) {
+
+            var sourceId = $scope.document.url.slice($scope.document.url.lastIndexOf('/') + 1);
+            var status = $scope.statementsByEntity[subj].properties[prop][obj];
+
+            if (status.confirmed < 1) {
+
+                StatementService.references.save({sId: subj, pId: prop, oId: obj, documentUrl: sourceId},
+                    function (result) {
+                        var status = $scope.statementsByEntity[subj].properties[prop][obj];
+                        console.log('returning from post request to wikidata');
+                        console.log(result);
+                        if (result.datavalue) {
+                            status.confirmed = 1;
+                        } else {
+                            status.confirmed = 0;
+                        }
+                    });
+            }
+        };
 
 
         $scope.queryAnnotations = function (pageNum) {
@@ -222,7 +271,7 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$http', '$filter', 'Comm
             if (CommonService.filter.query.length > 0) {
                 var show = $scope.filterCommonFields(annotation);
                 if (annotation.hasOwnProperty("rdf")) {
-                    show |= annotation['oa']['hasBody']['label'].toLowerCase().indexOf(CommonService.filter.query.toLowerCase()) != -1;                 
+                    show |= annotation['oa']['hasBody']['label'].toLowerCase().indexOf(CommonService.filter.query.toLowerCase()) != -1;
                 }
                 return show;
             }
@@ -233,11 +282,15 @@ neonionApp.controller('AnnotationListCtrl', ['$scope', '$http', '$filter', 'Comm
             return $scope.filterCommonFields(annotation);
         };
 
-        $scope.buttonColor = function(exists) {
-            if (exists < 1) {
+        $scope.buttonColor = function(status) {
+            if (status.exists < 1) {
                 return "orange";
             } else {
-                return "green";
+                if (status.confirmed < 1) {
+                    return "green";
+                } else {
+                    return "grey";
+                }
             }
         }
 

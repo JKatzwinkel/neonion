@@ -1,5 +1,5 @@
 <div ng-app="neonionApp" ng-controller="AnnotationListCtrl">
-    <h2>{{document.title}}</h2>
+    <h2 title="{{ document }}">{{document.title}}</h2>
 
     <div ng-repeat="(item_page, statements) in statementsByEntity">
         <h4>
@@ -22,17 +22,20 @@
                 <tr ng-repeat="(value, status) in values">
 
                     <td>
-                        {{ property }}
+                        <a href="http://wikidata.org/wiki/Property:{{ property }}">{{ property }}</a>
                     </td>
 
                     <td style="text-align:right">
-                        {{ value }}
+                        <a href="http://wikidata.org/wiki/{{ value }}">{{ value }}</a>
                     </td>
 
-                    <td  style="text-align:right;color:{{ buttonColor(status.exists) }};">
+                    <td  style="text-align:right;color:{{ buttonColor(status) }};">
                         <div ng-switch on="status.exists">
-                            <button ng-switch-when="0" class="fa fa-upload" title="Add statement to item page"></button>
-                            <button ng-switch-when="1" class="fa fa-check-square-o" title="Confirm statement on item page and add bibliographic source"></button>
+                            <button ng-switch-when="0" class="fa fa-upload" title="Add statement to item page"
+                                    ng-click="contributeStatement(item_page, property, value)"/>
+                            <button ng-switch-when="1" class="fa fa-check-square-o" title="Confirm statement on item page and add bibliographic source"
+                                    ng-click="contributeReference(item_page, property, value)"
+                            />
                         </div>
                     </td>
 

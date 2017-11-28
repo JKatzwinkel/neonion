@@ -833,6 +833,7 @@
                     editor.find(".annotator-line").hide();
                 }
             },
+
             formatCreator: function (annotation) {
                 var userField = Annotator.Plugin.neonion.prototype.literals['en'].unknown;
                 if (annotation.hasOwnProperty('oa')) {

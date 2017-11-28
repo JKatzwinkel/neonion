@@ -50,8 +50,7 @@ INSTALLED_APPS = (
     'documents',
     'accounts',
     'endpoint',
-    'annotationsets',
-    'django_rq',
+    'annotationsets'
 )
 
 AUTH_USER_MODEL = 'accounts.User'

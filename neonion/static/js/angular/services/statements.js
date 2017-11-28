@@ -10,6 +10,13 @@ neonionApp.factory('StatementService', ['$resource',
             proofs: $resource('/api/wikidata/statement/:sId/:pId/',
                 {sId: '@sId', pId: '@pId'}
             ),
+            references: $resource('/api/wikidata/reference/:sId/:pId/:oId/:documentUrl',
+                {sId: '@sId', pId: '@pId', oId: '@oId', documentUrl: '@documentUrl'},
+                {
+                    get: {method: 'GET'},
+                    save: {method: 'POST'}
+                }
+            ),
             recommended_types: $resource('/api/wikidata/recommend/entity/:cId/:sId',
                 {cId: '@cId', sId: '@sId'}
             ),

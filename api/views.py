@@ -71,14 +71,13 @@ def entity_search(request, index, type, term):
 @require_GET
 def entity_lookup(request, type, term):
     logger.info(u'supposed to lookup up "{}" ({})'.format(term, type))
-    wikidataClient = WikidataClient()
     result = wikidataClient.search(term, type)
     logger.info(result)
     return JsonResponse(result,safe=False)
 
 @require_GET
 def predicate_lookup(request, sid, pid):
-    wikidataClient = WikidataClient()
+    #wikidataClient = WikidataClient()
     result = wikidataClient.sparql('wd:{} wdt:{} ?o'.format(sid, pid))
     result = [o.get('o', {}) for o in result]
     result = [o.get('value', '') for o in result if o.get('type') == 'uri']
@@ -120,3 +119,19 @@ def recommend(request):
     recommendations = recommender.recommend()
     return JsonResponse(recommendations)
 
+
+## wikidata/reference endpoint, look up or create source reference for statement
+def statement_reference(request, sid, pid, oid, document_url):
+    document_id = wikidataClient.extract_id(document_url)
+    print(document_id)
+    if request.method == "GET":
+        res = wikidataClient.find_claim_source(sid, pid, oid, document_id)
+        return JsonResponse(res)
+    elif request.method == "POST":
+        res = wikidataClient.support_claim(sid, pid, oid, document_id)
+        print(res)
+        return JsonResponse(res)
+    return JsonResponse({})
+
+
+wikidataClient = WikidataClient()
