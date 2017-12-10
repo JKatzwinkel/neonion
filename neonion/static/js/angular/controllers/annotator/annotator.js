@@ -77,7 +77,12 @@ neonionApp.controller('AnnotatorCtrl', ['$scope', '$rootScope', '$cookies', '$lo
                             uri: $scope.documentId,
                             workspace: $scope.groupId,
                             annotationMode: $scope.getAnnotationModeCookie()
-                        });
+                        })
+                        // add wikidata lookup plugin
+                        .annotator('addPlugin', 'wikidataNER', {
+
+                            }
+                        );
 
                     // get annotator instance and subscribe to events
                     $scope.annotator = angular.element("#document-body").data("annotator");
