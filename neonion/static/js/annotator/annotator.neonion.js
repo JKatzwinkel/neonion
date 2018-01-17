@@ -28,6 +28,8 @@
          * @returns {*}
          */
         this.conceptSet = function (concepts) {
+						console.log('meh');
+						console.log(concepts);
             if (concepts) {
                 this.concepts = concepts;
                 if (this.editorState.annotationMode == this.annotationModes.conceptTagging) {

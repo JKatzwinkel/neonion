@@ -8,13 +8,13 @@ neonionApp.factory('ConceptSetService', ['$resource',
                 {
                     'save': {method: 'POST', url: '/api/conceptsets/'},
                     'update': {method: 'PUT'},
-                    'getDeep': {method: 'GET', isArray: false, params: {deep: true}}
+                    'getDeep': {method: 'GET', isArray:false, params: {deep: true}}
                 }
             );
 
-            factory.conceptSets = factory.resource.query(function(data){
-               return data;
-            });
+
+					factory.conceptSets = factory.resource.query();
+					console.log(factory.conceptSets);
 
 
             return factory;
