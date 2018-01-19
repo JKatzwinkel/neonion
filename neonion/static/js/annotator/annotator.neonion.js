@@ -200,7 +200,8 @@
                 'contextInformation',
                 'visualizeRelationship',
                 'viewerSummarizeStatements',
-                'pointAndLightRelations'
+                'pointAndLightRelations',
+                'lelWhatNow'
             ],
             lookup: {
                 prefix: "/api/es/",
