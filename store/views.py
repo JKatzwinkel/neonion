@@ -38,10 +38,13 @@ def empty_result():
 
 def get_filter_query(parameters):
     query_params = []
-    for key, value in parameters.iteritems():
-        query_params.append({
-            'term': {key: value}
-        })
+    for key, values in parameters.iteritems():
+        if not type(values) is list:
+            values = [values]
+        for value in values:
+            query_params.append({
+                'term': {key: value}
+            })
 
     return {
         "query": {
