@@ -38,10 +38,13 @@ def empty_result():
 
 def get_filter_query(parameters):
     query_params = []
-    for key, value in parameters.iteritems():
-        query_params.append({
-            'term': {key: value}
-        })
+    for key, values in parameters.iteritems():
+        if not type(values) is list:
+            values = [values]
+        for value in values:
+            query_params.append({
+                'term': {key: value}
+            })
 
     return {
         "query": {
@@ -200,7 +203,7 @@ class SearchView(generics.GenericAPIView):
             query = get_filter_query(params)
             response = es.search(body=query, index=settings.ELASTICSEARCH_INDEX,
                                  doc_type=ANNOTATION_TYPE, from_=offset, size=size)
-        except exceptions.ElasticHttpNotFoundError:
+        except exceptions.TransportError:
             return JsonResponse(empty_result())
         except:
             return HttpResponse(status=500)
@@ -223,7 +226,7 @@ def search(request, format=None):
         query = get_filter_query(params)
         response = es.search(body=query, index=settings.ELASTICSEARCH_INDEX,
                              doc_type=ANNOTATION_TYPE, from_=offset, size=size)
-    except exceptions.ElasticHttpNotFoundError:
+    except exceptions.TransportError:
         return JsonResponse(empty_result())
     except:
         return HttpResponse(status=500)

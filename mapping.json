@@ -2,7 +2,7 @@
   "mappings": {
     "annotation": {
       "properties": {
-        "id": {"type": "text", "index": false},
+        "id": {"type": "keyword"},
         "created": {"type": "date"},
         "updated": {"type": "date"},
         "quote": {"type": "text", "analyzer": "standard"},
@@ -18,7 +18,10 @@
             "hasBody": {
               "properties": {
                 "@id": {"type": "text", "index": false},
-                "@type": {"type": "keyword"}
+                "@type": {"type": "keyword"},
+                "contextualizedAs": {"type": "keyword"},
+                "classifiedAs": {"type": "keyword"},
+                "identifiedAs": {"type": "keyword"}
               }
             },
             "hasTarget": {
@@ -32,11 +35,22 @@
                   }
                 }
               }
+            },
+            "annotatedBy": {
+              "properties": {
+                "@id": {"type": "keyword"}
+              }
             }
           }
         },
         "neonion": {
           "properties": {
+            "creator": {"type": "keyword"},
+            "viewer": {
+              "properties": {
+                "conceptLabel": {"type": "keyword"}
+              }
+            },
             "context": {
               "properties": {
                 "pageIndex": {"type": "integer"},

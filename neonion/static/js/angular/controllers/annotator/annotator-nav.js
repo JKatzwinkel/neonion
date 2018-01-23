@@ -8,7 +8,7 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
 
         $scope.systemSettings = systemSettings;
         $scope.annotatorService = AnnotatorService;
-        $scope.conceptSetService = ConceptSetService;
+
         $scope.mode = {
             commenting: {
                 shortCut: "A",
@@ -23,6 +23,9 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
                 value: Annotator.Plugin.neonion.prototype.annotationModes.conceptTagging
             }
         };
+
+        $scope.conceptSets = ConceptSetService.query();
+
 
         $scope.shortCutModifier = {
             default: {
@@ -106,6 +109,33 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
                 });
             }
         };
+
+        $scope.return = function () {
+            $scope.$emit("returnEvent");
+        };
+
+        $scope.getConceptSet = function () {
+            var conceptSetId = $scope.document ? $scope.document.concept_set : 'default';
+
+            return ConceptSetService.getDeep({id: conceptSetId},
+                function (conceptSet) {
+                    $scope.conceptSet = conceptSet
+                }).$promise;
+        };
+
+        $scope.switchConceptSet = function(conceptSetId) {
+            console.log('change concept set to '+conceptSetId);
+            $scope.document.concept_set = conceptSetId;
+
+            ConceptSetService.getDeep({id: conceptSetId},
+                function (conceptSet) {
+                    $scope.conceptSet = conceptSet
+                }).$promise.then(function(data){
+                    AnnotatorService.annotator().plugins.neonion.conceptSet($scope.conceptSet.concepts);
+                    $scope.document.$update($scope.return);
+            });
+        }
+
 
         /**
          * Find the right method, call on correct element.

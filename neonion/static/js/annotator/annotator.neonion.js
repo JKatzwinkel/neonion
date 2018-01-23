@@ -201,7 +201,7 @@
                 'visualizeRelationship',
                 'viewerSummarizeStatements',
                 'pointAndLightRelations',
-                'lelWhatNow'
+                'wikidataLiveEntitySearch'
             ],
             lookup: {
                 prefix: "/api/es/",

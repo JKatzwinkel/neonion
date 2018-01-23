@@ -20,13 +20,19 @@
             </thead>
             <tbody>
             <tr ng-repeat="(key, annotationByConcept) in annotationByConceptType | orderBy: 'oa.hasBody.label' | groupBy: 'oa.hasBody.contextualizedAs'">
-                <td class="col-md-6">{{ (annotationByConcept | first)['oa']['hasBody']['label'] }}</td>
+                <td class="col-md-6">
+                    {{ (annotationByConcept | first).oa.hasBody.label }}
+                    <!-- link to entity resource -->
+                    <a href="{{ (annotationByConcept | first).oa.hasBody.identifiedAs }}">
+                        <i class="{{ (annotationByConcept | first).oa.hasBody.identifiedAs ? 'fa fa-database' : ''}}"></i>
+                    </a>
+                </td>
                 <td class="col-md-4">
-                    <a class="link" href="/annotation_occurrences#?rdf.uri={{ key | escape }}&oa.annotatedBy.email={{ user.email }}">
+                  <a class="link" href="/annotation_occurrences#?oa.hasBody.contextualizedAs={{ key | escape }}&neonion.creator={{ user.email }}">
                         {{ annotationByConcept.length }} Occurrences
                     </a>
                     in
-                    <a class="link" href="/annotation_documents#?rdf.uri={{ key | escape }}&oa.annotatedBy.email={{ user.email }}">
+                    <a class="link" href="/annotation_documents#?uri={{ (annotationByConcept | first).uri | escape }}&neonion.creator={{ user.email }}">
                         {{ (annotationByConcept | unique : 'uri').length }} Documents
                     </a>
                 </td>

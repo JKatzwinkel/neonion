@@ -11,13 +11,6 @@ neonionApp.factory('ConceptSetService', ['$resource',
                     'getDeep': {method: 'GET', isArray:false, params: {deep: true}}
                 }
             );
+        }]
 
-
-					factory.conceptSets = factory.resource.query();
-					console.log(factory.conceptSets);
-
-
-            return factory;
-        }
-    ]
 );

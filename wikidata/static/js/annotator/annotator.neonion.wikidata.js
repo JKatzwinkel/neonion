@@ -1,43 +1,35 @@
 (function () {
-	"use strict";
+  "use strict";
 
 
-	console.log('what is going on here')
+  Annotator.Plugin.neonion.prototype.widgets['wikidataLiveEntitySearch'] = function (scope, options) {
+    var factory = {};
 
-	Annotator.Plugin.neonion.prototype.widgets['lelWhatNow'] = function (scope, options) {
-		var factory = {
-			counter: 0
-		};
+    factory.load = function () {
 
-		factory.load = function () {
+      // overwrite local endpoint called for entity search
+      scope.options.lookup = {
+        prefix: '/wikidata',
+        urls: {
+          search: "/itemsearch"
+        }
+      };
 
-			console.log('LOADING!');
-			console.log(scope.options);
+      scope.annotator.subscribe('annotationEditorShown', function (editor, annotation) {
 
-			scope.options.lookup = {
-			  prefix: '/wikidata',
-				urls: {
-					search: "/itemsearch"
-				}
-			};
+        console.log(annotation);
+        console.log(scope.options);
 
-			scope.annotator.subscribe('annotationEditorShown', function (editor, annotation) {
+      });
 
-				console.log(annotation);
-				console.log('LOOOOOOLL!!!!!!');
-				console.log(scope.options);
+      scope.annotator.subscribe('annotationEditorHidden', function () {
 
-			});
 
-			scope.annotator.subscribe('annotationEditorHidden', function () {
-				factory.counter ++;
-				console.log('DOOOOONE!');
-				console.log(factory.counter);
-			});
+      });
 
-		};
+    };
 
-		return factory;
+    return factory;
 
-	}
+  }
 })();
