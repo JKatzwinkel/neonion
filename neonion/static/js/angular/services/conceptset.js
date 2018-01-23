@@ -1,9 +1,7 @@
 neonionApp.factory('ConceptSetService', ['$resource',
         function ($resource) {
 
-            factory = {};
-
-            factory.resource = $resource('/api/conceptsets/:id',
+            return $resource('/api/conceptsets/:id',
                 {id: '@id'},
                 {
                     'save': {method: 'POST', url: '/api/conceptsets/'},
