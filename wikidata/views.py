@@ -46,7 +46,7 @@ def wbsearchentities(terms, limit=50):
     if terms and len(terms) > 0:
         url = wbapi_url_template.format(urlencode({
             "action": "wbsearchentities",
-            "search": terms,
+            "search": unicode(terms).encode('utf-8'),
             "limit": limit
             }))
         response = requests.get(url)
