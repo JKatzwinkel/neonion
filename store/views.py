@@ -56,6 +56,13 @@ def get_filter_query(parameters):
         }
 
 
+def convert_es_to_dict(result_set):
+    result_set = {item['_source']['oa']['@id']:item['_source'] for item in result_set['hits']['hits']}
+    return {
+            'total': len(result_set),
+            'dict': result_set
+            }
+
 class AnnotationListView(APIView):
     # TODO: find solution for annotator.store plugin an CSRF Tokens othern than ignoring the absence of the token
     authentication_classes = (UnsafeSessionAuthentication,)
@@ -232,3 +239,51 @@ def search(request, format=None):
         return HttpResponse(status=500)
     else:
         return JsonResponse(convert_es_to_list(response), safe=False)
+
+
+
+
+#TODO uncomment, add group_pk
+#@require_group_permission
+def linked_annotation_view(request, document_pk):
+    params = dict(request.GET)
+    x = linked_annotations(params, document_pk)
+
+    return JsonResponse(x, safe=False)
+
+
+
+def linked_annotations(params, document_pk):
+    offset = params.pop("offset", 0)
+    size = params.pop("limit", PAGE_SIZE)
+    #params["permissions.read"] = group_pk
+    params["uri"] = document_pk
+    #params["oa.motivatedBy"] = "oa:linking"
+
+    try:
+        query = get_filter_query(params)
+        response = es.search(body=query,
+                index=settings.ELASTICSEARCH_INDEX,
+                doc_type=ANNOTATION_TYPE,
+                from_=offset,
+                size=size)
+        results = convert_es_to_dict(response)
+
+        print('{} annotated relationships.'.format(results['total']))
+
+        predicates = [anno for anno in results['dict'].values() if anno.get('oa',{}).get('motivatedBy') == 'oa:linking']
+
+        statements = [{
+            'subject': results['dict'].get(anno['oa']['hasTarget']['hasSelector']['source']),
+            'property': anno,
+            'object': results['dict'].get(anno['oa']['hasTarget']['hasSelector']['target'])
+            } for anno in predicates]
+
+        print(statements)
+
+    except Exception as e:
+        print(e)
+        return None
+
+    return results['dict']
+

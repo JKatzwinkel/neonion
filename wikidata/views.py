@@ -3,12 +3,13 @@ import json
 import requests
 from urllib import urlencode
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
 
-from annotationsets.models import Concept, LinkedConcept
+from annotationsets.models import Concept, LinkedConcept, Property, LinkedProperty
+import store.views
 
 import wiki
 
@@ -125,6 +126,15 @@ def map_result(item):
 
 
 
+def get_value(obj, path):
+    """ retrieve value of a field within an object addressed by a colon-delimited path. """
+    keys = path.split(':')
+    while len(keys) > 0:
+        key = keys.pop(0)
+        obj = obj.get(key, {})
+    return obj
+
+
 ###########################################################################################################
 ##                                              VIEWS                                                    ##
 ###########################################################################################################
@@ -154,5 +164,54 @@ def search_typed_items(request, index, concept_id, term):
                     key=lambda r:r.get('rank',-1))))
 
     return JsonResponse(item_list, safe=False)
+
+
+def annotated_statements_as_json(params, dokument_pk):
+    # retrieve oa annotations from elasticsearch store
+    all_annotations = store.views.linked_annotations(params, document_pk)
+
+    statements = []
+    for anno in all_annotations.values():
+        if anno.get('oa',{}).get('motivatedBy') == 'oa:linking':
+
+            statement = {}
+
+            prop_id = get_value(anno, "oa:hasBody:relation")
+            # resolve linked properties
+            prop = get_object_or_404(Property, pk=prop_id.split('/')[-1])
+
+            statement['property'] = {
+                    'id': prop_id,
+                    'linked': [linked_property.linked_property for linked_property in prop.linked_properties.all()]
+                    }
+
+            # resolve object linked to subject and object annotation
+            for entity_role, oa_path in [('subject',"oa:hasTarget:hasSelector:source"), ('object', "oa:hasTarget:hasSelector:target")]:
+
+                entity_anno_id = get_value(anno, oa_path)
+
+                entity_anno = all_annotations.get(entity_anno_id)
+                concept_id = get_value(entity_anno, "oa:hasBody:classifiedAs")
+                concept = get_object_or_404(Concept, pk=concept_id.split('/')[-1])
+
+                statement[entity_role] = {
+                        'internal': get_value(entity_anno, "oa:hasBody:contextualizedAs"),
+                        'id': get_value(entity_anno, "oa:hasBody:identifiedAs"),
+                        'concept': {
+                            'id': concept_id,
+                            'linked': [linked_concept.linked_type for linked_concept in concept.linked_concepts.all()]
+                            }
+                        }
+
+            statements.append(statement)
+
+    return statements
+
+
+#TODO uncomment, add group_pk
+#@require_group_permission
+def annotated_statements(request, document_pk):
+    params = dict(request.GET)
+    return JsonResponse(statements, safe=False)
 
 
