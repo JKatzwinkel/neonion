@@ -1,3 +1,4 @@
+import os
 import re
 import json
 import requests
@@ -11,11 +12,11 @@ from django.views.decorators.http import require_GET
 from annotationsets.models import Concept, LinkedConcept, Property, LinkedProperty
 import store.views
 
+os.environ["PYWIKIBOT2_NO_USER_CONFIG"] = "1"
 import wiki
 
 # action, search, limit
-# TODO determine lang parameter based on language of document
-wbapi_url_template = "https://www.wikidata.org/w/api.php?format=json&language=en&uselang=en&{}"
+wbapi_url_template = "https://www.wikidata.org/w/api.php?format=json&{}"
 
 # insert 2 lists of items: instances and types to match against
 types_query_template = 'VALUES ?item {{{}}} . VALUES ?type {{{}}} . ?item wdt:P31/wdt:P279* ?type.'
@@ -41,7 +42,8 @@ wd_opt_props = ' . '.join(
         ['OPTIONAL {{ ?item wdt:{} ?{} }}'.format(v, k)
             for k, v in temporal_properties.items()])
 
-def wbsearchentities(terms, limit=50):
+# TODO determine lang parameter based on language of document
+def wbsearchentities(terms, limit=50, lang='en'):
     """Queries Wikidata's Wikibase API endpoint with action wbsearchentities"""
     res = []
     if terms and len(terms) > 0:
@@ -49,6 +51,8 @@ def wbsearchentities(terms, limit=50):
             "action": "wbsearchentities",
             "search": unicode(terms).encode('utf-8'),
             "limit": limit
+            "language": lang,
+            "uselang": lang
             }))
         response = requests.get(url)
         if response.status_code == 200:
@@ -212,6 +216,7 @@ def annotated_statements_as_json(params, dokument_pk):
 #@require_group_permission
 def annotated_statements(request, document_pk):
     params = dict(request.GET)
+    statements = annotated_statements_as_json(params, document_pk)
     return JsonResponse(statements, safe=False)
 
 
