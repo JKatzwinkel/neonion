@@ -50,7 +50,7 @@ def wbsearchentities(terms, limit=50, lang='en'):
         url = wbapi_url_template.format(urlencode({
             "action": "wbsearchentities",
             "search": unicode(terms).encode('utf-8'),
-            "limit": limit
+            "limit": limit,
             "language": lang,
             "uselang": lang
             }))
