@@ -128,7 +128,8 @@
       "title": "Editorial: The Ghetto as Holocaust Apparatus",
       "publisher": "Apparatus",
       "source": "http://www.apparatusjournal.net/index.php/apparatus/article/view/34/94",
-      "creator":"Natascha Drubek"
+      "creator":"Natascha Drubek",
+      "url": "https://www.wikidata.org/wiki/Q38110802"
     },
     "model": "documents.document",
     "pk": "196a22383c1b11e7a52628b2bdacf51c"
@@ -142,7 +143,8 @@
       "title": "Propaganda in Motion - Dziga Vertov`s and Aleksandr Medvedkin`s Film Trains and Agit Steamers of the 1920s and 1930s",
       "publisher": "Apparatus",
       "source": "http://www.apparatusjournal.net/index.php/apparatus/article/view/2/75",
-      "creator": "Adelheid Heftberger"
+      "creator": "Adelheid Heftberger",
+      "url": "https://www.wikidata.org/wiki/Q36403083"
     },
     "model": "documents.document",
     "pk": "c701b004606111e79eed28b2bdacf51c"

@@ -9,7 +9,7 @@ from common.vocab import neonion
 from common.mixins import ResourceMixin
 from common.sparql import insert_data
 from common.statements import metadata_statement
-
+from annotationsets.models import ConceptSet
 
 class File(models.Model):
     name = models.CharField('name', max_length=500)
@@ -64,7 +64,7 @@ class DocumentManager(models.Manager):
 
 class Document(ResourceMixin, models.Model):
 
-    concept_set = models.ForeignKey('annotationsets.ConceptSet', on_delete=models.SET_DEFAULT, default='default')
+    concept_set = models.ForeignKey(ConceptSet, null=True, on_delete=models.SET_NULL)
 
     title = models.CharField('name', max_length=500)
     attached_file = models.OneToOneField(File, null=True)
@@ -85,6 +85,10 @@ class Document(ResourceMixin, models.Model):
     subject = models.CharField('subject', max_length=200, default='', null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    # supposed to link to an open access resource providing this document
+    url = models.URLField('url', max_length=500, null=True)
+
 
     class_uri = neonion.DOCUMENT
 
