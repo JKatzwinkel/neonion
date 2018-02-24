@@ -133,6 +133,7 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
                 }).$promise.then(function(data){
                     AnnotatorService.annotator().plugins.neonion.conceptSet($scope.conceptSet.concepts);
                     //$scope.document.$update($scope.return);
+                    $scope.document.$save();
             });
         }
 
