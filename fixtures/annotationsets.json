@@ -56,7 +56,7 @@
       "comment": "",
       "linked_properties": [],
       "range": [
-        "consortium",
+        "organisation",
         "institution"
       ],
       "inverse_property": "member",
@@ -112,11 +112,11 @@
         "founded",
         "member"
       ],
-      "linked_concepts": [],
-      "label": "Consortium"
+      "linked_concepts": ["wikidata_organisation"],
+      "label": "Organisation"
     },
     "model": "annotationsets.concept",
-    "pk": "consortium"
+    "pk": "organisation"
   },
   {
     "fields": {
@@ -173,7 +173,7 @@
     "fields": {
       "comment": "The default concept set for annotating documents",
       "concepts": [
-        "consortium",
+        "organisation",
         "date",
         "institution",
         "person",
@@ -212,6 +212,19 @@
     "pk": "film"
   },
   {
+    "fields": {
+      "comment": "wikidata organisation item",
+      "endpoint": "https://www.wikidata.org",
+      "custom_query": null,
+      "linked_type": "https://www.wikidata.org/wiki/Q43229",
+      "retrieved_at": null,
+      "label": "Organisation@Wikidata",
+      "provider_class": ""
+    },
+    "model": "annotationsets.linkedconcept",
+    "pk": "wikidata_organisation"
+  },
+   {
     "fields": {
       "comment": "wikidata film item",
       "endpoint": "https://www.wikidata.org",
