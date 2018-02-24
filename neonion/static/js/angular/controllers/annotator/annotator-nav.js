@@ -159,7 +159,7 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
 
         $scope.getEntities = function() {
             var items = $.map(AnnotatorService.getAnnotationObjects(), function(elem){
-                return elem.oa.hasBody.identifiedAs;
+                return elem.oa.hasBody;
             });
             return items;
         }

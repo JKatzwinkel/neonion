@@ -94,14 +94,28 @@
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
             </a>
 
-            <ul class="dropdown-menu dropdown-menu-side">
-                <li class="dropdown-header">Detected entities</li>
-                <li class="dropdown-item" ng-repeat="entity in getEntities()" >
-                    <a href="{{ entity }}">
-                        <span>{{ entity.split('/').pop() }}</span>
-                    </a>
-                </li>
-            </ul>
+            <table class="dropdown-menu dropdown-menu-side">
+              <tr>
+                <th colspan="3" class="dropdown-header">
+                  Linked Entities
+                </th>
+              </tr>
+                    
+              <tr class="dropdown-item" ng-repeat="entity in getEntities()" >
+                <td>
+                  <a href="{{ entity.identifiedAs }}">
+                    {{ entity.identifiedAs.split('/').pop() }}
+                  </a> 
+                </td>
+                <td>
+                  ({{ entity.label }})
+                </td>
+                <td>
+                  {{ entity.classifiedAs.split('/').pop() }}
+                </td>
+              </tr>
+
+            </table>
         </li>
     </ul>
 </nav>

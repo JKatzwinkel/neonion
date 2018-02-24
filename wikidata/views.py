@@ -199,6 +199,7 @@ def annotated_statements_as_json(params, document_pk):
                 concept = get_object_or_404(Concept, pk=concept_id.split('/')[-1])
 
                 statement[entity_role] = {
+                        'label': get_value(entity_anno, "oa:hasBody:label"),
                         'internal': get_value(entity_anno, "oa:hasBody:contextualizedAs"),
                         'id': get_value(entity_anno, "oa:hasBody:identifiedAs"),
                         'concept': {
