@@ -246,6 +246,7 @@
                 "<div id='resource-list'>" + factory.templates.unknownItem + "</div>"
             );
 
+
             // create input for search term
             var searchInput = $('<input>').attr({
                 type: 'text',
@@ -380,6 +381,9 @@
                             list.append(factory.templates.noResults);
                         }
                         list.prepend(factory.templates.unknownItem);
+                        // write annotation concept into unknown resource list item
+                        $('.unknown').text('Unknown Resource of type ' + concept.label);
+
                     })
                     .fail(function () {
                         list.html(factory.templates.unknownItem);
@@ -438,10 +442,13 @@
             for (var i = 0; i < list.length; i++) {
                 var label = formatter(list[i]);
                 items.push(
+                    "<div class='entity-search-result' style='display:flex;'>" +
                     "<button type='button' class='' value='" + (offset + i) + "'>" +
                     label +
+                    "</button>" +
                     "<a class='pull-right' href='" + list[i].uri + "' target='blank'><i class='fa fa-external-link'></i></a>" +
-                    "</button>"
+                    "</div>" +
+                    ""
                 );
             }
             return items;

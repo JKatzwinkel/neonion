@@ -9506,7 +9506,6 @@ fieldset[disabled] .btn-secondary.focus {
 .annotator-editor .annotator-item button {
   background: #ffffff;
   border: none;
-  border-top: 1px solid #cdcdcd;
   color: #000000;
   display: block;
   outline: 0;
@@ -9515,8 +9514,16 @@ fieldset[disabled] .btn-secondary.focus {
   text-indent: 0;
   width: 100%;
 }
+.annotator-adder button ,
+.annotator-editor .annotator-item div.entity-search-result {
+  border-top: 1px solid #cdcdcd;
+	
+}
 .annotator-adder button:hover,
-.annotator-editor .annotator-item button:hover {
+.annotator-editor .annotator-item button:hover ,
+.annotator-editor .annotator-item * button:hover ,
+.annotator-adder div.entity-search-result:hover,
+.annotator-editor .annotator-item div.entity-search-result:hover {
   background-color: #f39100;
   color: #ffffff;
 }
