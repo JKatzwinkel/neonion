@@ -170,7 +170,7 @@ def search_typed_items(request, index, concept_id, term):
     return JsonResponse(item_list, safe=False)
 
 
-def annotated_statements_as_json(params, dokument_pk):
+def annotated_statements_as_json(params, document_pk):
     # retrieve oa annotations from elasticsearch store
     all_annotations = store.views.linked_annotations(params, document_pk)
 
