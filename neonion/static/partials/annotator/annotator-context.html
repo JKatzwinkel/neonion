@@ -17,10 +17,23 @@
         <logged-user/>
     </li>
 </ul>
-<div class="gap-top">
+<ul class="gap-top list-inline">
+	<li><i class="fa fa-book" aria-hidden="true"></i>
     {{ document.title }}
+	</li>
+	<li>
         <span class="list-icon" ng-switch on="isPrivate"><i class="fa fa-circle-o"></i>
             <span ng-switch-when="true">Private</span>
             <span ng-switch-default>{{ group.name }}</span>
         </span>
-</div>
+	</li>
+
+	<li ng-if="document.url" class="pull-right">
+		<i class="fa fa-database"></i>
+		<a href="{{ document.url }}">
+			<span>
+				{{ document.url.split('/').pop() }}
+			</span>
+		</a>
+	</li>
+</ul>
