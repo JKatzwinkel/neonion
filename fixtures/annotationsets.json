@@ -1,1 +1,270 @@
-[    {        "fields": {            "comment": "wikidata film director property",            "label": "FilmDirector@Wikidata",            "linked_property": "https://www.wikidata.org/wiki/Property:P57"        },        "model": "annotationsets.linkedproperty",        "pk": "wikidata_film_director"    },    {        "fields": {            "comment": "To be brought to an end; be annulled or terminated",            "inverse_property": null,            "label": "dissolved",            "linked_properties": [],            "range": [                "date"            ]        },        "model": "annotationsets.property",        "pk": "dissolved"    },    {        "fields": {            "comment": "director of a filmographic work of art",            "inverse_property": null,            "label": "director",            "linked_properties": [                "wikidata_film_director"            ],            "range": [                "person"            ]        },        "model": "annotationsets.property",        "pk": "film_director"    },    {        "fields": {            "comment": "To establish or set up, especially with provision for continuing existence",            "inverse_property": null,            "label": "founded",            "linked_properties": [],            "range": [                "date"            ]        },        "model": "annotationsets.property",        "pk": "founded"    },    {        "fields": {            "comment": "",            "inverse_property": null,            "label": "has role",            "linked_properties": [],            "range": [                "person_function"            ]        },        "model": "annotationsets.property",        "pk": "has_role"    },    {        "fields": {            "comment": "",            "inverse_property": "member_of",            "label": "member",            "linked_properties": [],            "range": [                "person"            ]        },        "model": "annotationsets.property",        "pk": "member"    },    {        "fields": {            "comment": "",            "inverse_property": "member",            "label": "member of",            "linked_properties": [],            "range": [                "institution",                "organisation"            ]        },        "model": "annotationsets.property",        "pk": "member_of"    },    {        "fields": {            "comment": "",            "custom_query": null,            "endpoint": "http://dbpedia.org/sparql",            "label": "Person@DBpedia",            "linked_type": "http://dbpedia.org/ontology/Scientist",            "provider_class": "common.knowledge.dbpedia.DBpedia",            "retrieved_at": "2015-08-18T09:16:49.992Z",            "super_types": []        },        "model": "annotationsets.linkedconcept",        "pk": "dbpedia_person"    },    {        "fields": {            "comment": "wikidata film item",            "custom_query": null,            "endpoint": "https://www.wikidata.org",            "label": "Film@Wikidata",            "linked_type": "https://www.wikidata.org/wiki/Q11424",            "provider_class": "",            "retrieved_at": null,            "super_types": []        },        "model": "annotationsets.linkedconcept",        "pk": "wikidata_film"    },    {        "fields": {            "comment": "",            "custom_query": null,            "endpoint": "https://www.wikidata.org",            "label": "Institution@Wikidata",            "linked_type": "https://www.wikidata.org/wiki/Q178706",            "provider_class": "",            "retrieved_at": null,            "super_types": []        },        "model": "annotationsets.linkedconcept",        "pk": "wikidata_institution"    },    {        "fields": {            "comment": "wikidata organisation item",            "custom_query": null,            "endpoint": "https://www.wikidata.org",            "label": "Organisation@Wikidata",            "linked_type": "https://www.wikidata.org/wiki/Q43229",            "provider_class": "",            "retrieved_at": null,            "super_types": []        },        "model": "annotationsets.linkedconcept",        "pk": "wikidata_organisation"    },    {        "fields": {            "comment": "",            "custom_query": null,            "endpoint": "https://www.wikidata.org",            "label": "Person@Wikidata",            "linked_type": "https://www.wikidata.org/wiki/Q5",            "provider_class": "",            "retrieved_at": null,            "super_types": []        },        "model": "annotationsets.linkedconcept",        "pk": "wikidata_person"    },    {        "fields": {            "comment": "A particular point or period of time at which something happened or existed, or is expected to happen",            "label": "Date",            "linked_concepts": [],            "properties": []        },        "model": "annotationsets.concept",        "pk": "date"    },    {        "fields": {            "comment": "A filmographic piece of work",            "label": "Film",            "linked_concepts": [                "wikidata_film"            ],            "properties": [                "film_director"            ]        },        "model": "annotationsets.concept",        "pk": "film"    },    {        "fields": {            "comment": "An established organization or foundation, especially one dedicated to education, public service, or culture",            "label": "Institution",            "linked_concepts": [                "wikidata_institution"            ],            "properties": [                "founded",                "member"            ]        },        "model": "annotationsets.concept",        "pk": "institution"    },    {        "fields": {            "comment": "A cooperative arrangement among groups or institutions",            "label": "Organisation",            "linked_concepts": [                "wikidata_organisation"            ],            "properties": [                "dissolved",                "founded",                "member"            ]        },        "model": "annotationsets.concept",        "pk": "organisation"    },    {        "fields": {            "comment": "An individual human being",            "label": "Person",            "linked_concepts": [                "wikidata_person"            ],            "properties": [                "has_role",                "member_of"            ]        },        "model": "annotationsets.concept",        "pk": "person"    },    {        "fields": {            "comment": "",            "label": "Person Function",            "linked_concepts": [],            "properties": []        },        "model": "annotationsets.concept",        "pk": "person_function"    },    {        "fields": {            "comment": "Domain-specific concept set for Apparatus journal documents.",            "concepts": [                "film",                "institution",                "person"            ],            "label": "Apparatus"        },        "model": "annotationsets.conceptset",        "pk": "apparatus"    },    {        "fields": {            "comment": "The default concept set for annotating documents",            "concepts": [                "date",                "institution",                "organisation",                "person",                "person_function"            ],            "label": "Default"        },        "model": "annotationsets.conceptset",        "pk": "default"    }]
+[
+    {
+        "fields": {
+            "comment": "wikidata film director property",
+            "label": "FilmDirector@Wikidata",
+            "linked_property": "https://www.wikidata.org/wiki/Property:P57"
+        },
+        "model": "annotationsets.linkedproperty",
+        "pk": "wikidata_film_director"
+    },
+    {
+        "fields": {
+            "comment": "To be brought to an end; be annulled or terminated",
+            "inverse_property": null,
+            "label": "dissolved",
+            "linked_properties": [],
+            "range": [
+                "date"
+            ]
+        },
+        "model": "annotationsets.property",
+        "pk": "dissolved"
+    },
+    {
+        "fields": {
+            "comment": "director of a filmographic work of art",
+            "inverse_property": null,
+            "label": "director",
+            "linked_properties": [
+                "wikidata_film_director"
+            ],
+            "range": [
+                "person"
+            ]
+        },
+        "model": "annotationsets.property",
+        "pk": "film_director"
+    },
+    {
+        "fields": {
+            "comment": "To establish or set up, especially with provision for continuing existence",
+            "inverse_property": null,
+            "label": "founded",
+            "linked_properties": [],
+            "range": [
+                "date"
+            ]
+        },
+        "model": "annotationsets.property",
+        "pk": "founded"
+    },
+    {
+        "fields": {
+            "comment": "",
+            "inverse_property": null,
+            "label": "has role",
+            "linked_properties": [],
+            "range": [
+                "person_function"
+            ]
+        },
+        "model": "annotationsets.property",
+        "pk": "has_role"
+    },
+    {
+        "fields": {
+            "comment": "",
+            "inverse_property": "member_of",
+            "label": "member",
+            "linked_properties": [],
+            "range": [
+                "person"
+            ]
+        },
+        "model": "annotationsets.property",
+        "pk": "member"
+    },
+    {
+        "fields": {
+            "comment": "",
+            "inverse_property": "member",
+            "label": "member of",
+            "linked_properties": [],
+            "range": [
+                "institution",
+                "organisation"
+            ]
+        },
+        "model": "annotationsets.property",
+        "pk": "member_of"
+    },
+    {
+        "fields": {
+            "comment": "",
+            "custom_query": null,
+            "endpoint": "http://dbpedia.org/sparql",
+            "label": "Person@DBpedia",
+            "linked_type": "http://dbpedia.org/ontology/Scientist",
+            "provider_class": "common.knowledge.dbpedia.DBpedia",
+            "retrieved_at": "2015-08-18T09:16:49.992Z",
+            "super_types": []
+        },
+        "model": "annotationsets.linkedconcept",
+        "pk": "dbpedia_person"
+    },
+    {
+        "fields": {
+            "comment": "wikidata film item",
+            "custom_query": null,
+            "endpoint": "https://www.wikidata.org",
+            "label": "Film@Wikidata",
+            "linked_type": "https://www.wikidata.org/wiki/Q11424",
+            "provider_class": "",
+            "retrieved_at": null,
+            "super_types": []
+        },
+        "model": "annotationsets.linkedconcept",
+        "pk": "wikidata_film"
+    },
+    {
+        "fields": {
+            "comment": "",
+            "custom_query": null,
+            "endpoint": "https://www.wikidata.org",
+            "label": "Institution@Wikidata",
+            "linked_type": "https://www.wikidata.org/wiki/Q178706",
+            "provider_class": "",
+            "retrieved_at": null,
+            "super_types": []
+        },
+        "model": "annotationsets.linkedconcept",
+        "pk": "wikidata_institution"
+    },
+    {
+        "fields": {
+            "comment": "wikidata organisation item",
+            "custom_query": null,
+            "endpoint": "https://www.wikidata.org",
+            "label": "Organisation@Wikidata",
+            "linked_type": "https://www.wikidata.org/wiki/Q43229",
+            "provider_class": "",
+            "retrieved_at": null,
+            "super_types": []
+        },
+        "model": "annotationsets.linkedconcept",
+        "pk": "wikidata_organisation"
+    },
+    {
+        "fields": {
+            "comment": "",
+            "custom_query": null,
+            "endpoint": "https://www.wikidata.org",
+            "label": "Person@Wikidata",
+            "linked_type": "https://www.wikidata.org/wiki/Q5",
+            "provider_class": "",
+            "retrieved_at": null,
+            "super_types": []
+        },
+        "model": "annotationsets.linkedconcept",
+        "pk": "wikidata_person"
+    },
+    {
+        "fields": {
+            "comment": "A particular point or period of time at which something happened or existed, or is expected to happen",
+            "label": "Date",
+            "linked_concepts": [],
+            "properties": []
+        },
+        "model": "annotationsets.concept",
+        "pk": "date"
+    },
+    {
+        "fields": {
+            "comment": "A filmographic piece of work",
+            "label": "Film",
+            "linked_concepts": [
+                "wikidata_film"
+            ],
+            "properties": [
+                "film_director"
+            ]
+        },
+        "model": "annotationsets.concept",
+        "pk": "film"
+    },
+    {
+        "fields": {
+            "comment": "An established organization or foundation, especially one dedicated to education, public service, or culture",
+            "label": "Institution",
+            "linked_concepts": [
+                "wikidata_institution"
+            ],
+            "properties": [
+                "founded",
+                "member"
+            ]
+        },
+        "model": "annotationsets.concept",
+        "pk": "institution"
+    },
+    {
+        "fields": {
+            "comment": "A cooperative arrangement among groups or institutions",
+            "label": "Organisation",
+            "linked_concepts": [
+                "wikidata_organisation"
+            ],
+            "properties": [
+                "dissolved",
+                "founded",
+                "member"
+            ]
+        },
+        "model": "annotationsets.concept",
+        "pk": "organisation"
+    },
+    {
+        "fields": {
+            "comment": "An individual human being",
+            "label": "Person",
+            "linked_concepts": [
+                "wikidata_person"
+            ],
+            "properties": [
+                "has_role",
+                "member_of"
+            ]
+        },
+        "model": "annotationsets.concept",
+        "pk": "person"
+    },
+    {
+        "fields": {
+            "comment": "",
+            "label": "Person Function",
+            "linked_concepts": [],
+            "properties": []
+        },
+        "model": "annotationsets.concept",
+        "pk": "person_function"
+    },
+    {
+        "fields": {
+            "comment": "Domain-specific concept set for Apparatus journal documents.",
+            "concepts": [
+                "film",
+                "institution",
+                "person"
+            ],
+            "label": "Apparatus"
+        },
+        "model": "annotationsets.conceptset",
+        "pk": "apparatus"
+    },
+    {
+        "fields": {
+            "comment": "The default concept set for annotating documents",
+            "concepts": [
+                "date",
+                "institution",
+                "organisation",
+                "person",
+                "person_function"
+            ],
+            "label": "Default"
+        },
+        "model": "annotationsets.conceptset",
+        "pk": "default"
+    }
+]
