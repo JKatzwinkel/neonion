@@ -252,34 +252,41 @@ def linked_annotation_view(request, document_pk):
     return JsonResponse(x, safe=False)
 
 
-
-def linked_annotations(params, document_pk):
+def from_es(params):
+    """ get annotations from ES, specify params['url'] if you want to limit to certain document """
     offset = params.pop("offset", 0)
     size = params.pop("limit", PAGE_SIZE)
+    query = get_filter_query(params)
+    response = es.search(body=query,
+            index=settings.ELASTICSEARCH_INDEX,
+            doc_type=ANNOTATION_TYPE,
+            from_=offset,
+            size=size)
+    return convert_es_to_dict(response)['dict'].values()
+
+
+def annotated_entities(params, document_pk, concept_id):
+    params["oa.motivatedBy"] = "oa:identifying"
+    #if concept_id:
+    #    params["oa.hasBody.classifiedAs"] = concept_id
+    params["uri"] = document_pk
+    return [a.get('oa',{}).get('hasBody',{}) for a in from_es(params)]
+
+
+def linked_annotations(params, document_pk):
     #params["permissions.read"] = group_pk
     params["uri"] = document_pk
-    #params["oa.motivatedBy"] = "oa:linking"
 
     try:
-        query = get_filter_query(params)
-        response = es.search(body=query,
-                index=settings.ELASTICSEARCH_INDEX,
-                doc_type=ANNOTATION_TYPE,
-                from_=offset,
-                size=size)
-        results = convert_es_to_dict(response)
+        results = from_es(params)
 
-        print('{} annotated relationships.'.format(results['total']))
-
-        predicates = [anno for anno in results['dict'].values() if anno.get('oa',{}).get('motivatedBy') == 'oa:linking']
+        predicates = [anno for anno in results if anno.get('oa',{}).get('motivatedBy') == 'oa:linking']
 
         statements = [{
             'subject': results['dict'].get(anno['oa']['hasTarget']['hasSelector']['source']),
             'property': anno,
             'object': results['dict'].get(anno['oa']['hasTarget']['hasSelector']['target'])
             } for anno in predicates]
-
-        print(statements)
 
     except Exception as e:
         print(e)

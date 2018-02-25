@@ -15,6 +15,8 @@ import store.views
 os.environ["PYWIKIBOT2_NO_USER_CONFIG"] = "1"
 import wiki
 
+import util
+
 # action, search, limit
 wbapi_url_template = "https://www.wikidata.org/w/api.php?format=json&{}"
 
@@ -84,10 +86,10 @@ def add_temporal_data(results):
     # insert item IDs into SPARQL query template (only items of valid type for classifying concept)
     # insert OPTIONAL clauses matching properties defined above (temporal_properties)
     query = birth_death_query_template.format(
-            wd_item_id_list(
-                [k for k,v in results.items() if v.get('valid')]
-                ),
-            wd_opt_props
+                wd_item_id_list(
+                    [k for k,v in results.items() if v.get('valid')]
+                    ),
+                wd_opt_props
             )
     # query WDQS endpoint and retrieve JSON
     data = wiki.sparql(query)
@@ -168,6 +170,22 @@ def search_typed_items(request, index, concept_id, term):
                     key=lambda r:r.get('rank',-1))))
 
     return JsonResponse(item_list, safe=False)
+
+
+def linked_entities_in_document(request, document_pk, concept_id=None):
+    entity_list = store.views.annotated_entities(dict(request.GET), document_pk, concept_id)
+    if concept_id:
+        entities = [get_value(entity, 'identifiedAs') for entity in entity_list if get_value(entity, 'classifiedAs').endswith(concept_id)]
+    else:
+        entities = entity_list
+    return JsonResponse(entities, safe=False)
+
+
+def types_related_to_entities_in_document(request, document_pk, concept_id=None):
+    entities = json.loads(linked_entities_in_document(request, document_pk, concept_id).content)
+    entities = [e.split('/')[-1] for e in entities]
+    types = util.types_related_to_entity_list(entities)
+    return JsonResponse(types, safe=False)
 
 
 def annotated_statements_as_json(params, document_pk):
