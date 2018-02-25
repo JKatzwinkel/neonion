@@ -10,12 +10,15 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
 
 from annotationsets.models import Concept, LinkedConcept, Property, LinkedProperty
-import store.views
+import store
 
 os.environ["PYWIKIBOT2_NO_USER_CONFIG"] = "1"
-import wiki
 
+import wiki
 import util
+import recommender
+
+
 
 # action, search, limit
 wbapi_url_template = "https://www.wikidata.org/w/api.php?format=json&{}"
@@ -172,19 +175,27 @@ def search_typed_items(request, index, concept_id, term):
     return JsonResponse(item_list, safe=False)
 
 
-def linked_entities_in_document(request, document_pk, concept_id=None):
+def linked_entities_in_document(request, document_pk, concept_id=None, as_view=True):
+    """ retrieve IDs of linked resources from elasticsearch annotations store """
     entity_list = store.views.annotated_entities(dict(request.GET), document_pk, concept_id)
     if concept_id:
         entities = [get_value(entity, 'identifiedAs') for entity in entity_list if get_value(entity, 'classifiedAs').endswith(concept_id)]
     else:
-        entities = entity_list
-    return JsonResponse(entities, safe=False)
+        entities = [get_value(entity, 'identifiedAs') for entity in entity_list]
+    return JsonResponse(entities, safe=False) if as_view else entities
 
 
 def types_related_to_entities_in_document(request, document_pk, concept_id=None):
-    entities = json.loads(linked_entities_in_document(request, document_pk, concept_id).content)
+    """ extract terminological knowledge from collection of entities specified by a document and the concept which was used to annotate them there. """
+    entities = linked_entities_in_document(request, document_pk,
+            concept_id, as_view=False)
     entities = [e.split('/')[-1] for e in entities]
-    types = util.types_related_to_entity_list(entities)
+    types = util.types_related_to_entity_list(entities, concept_id, request.user.id)
+
+    if request.method == 'PUT':
+        recommender.heute_abend_wird_ehrenlos(types)
+
+
     return JsonResponse(types, safe=False)
 
 

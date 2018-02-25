@@ -12,6 +12,8 @@ class neonion:
     LINKED_PROPERTY = settings.NEONION_BASE_NAMESPACE.rstrip('/') + '/ontology/linkedproperty'
     DOCUMENT = settings.NEONION_BASE_NAMESPACE.rstrip('/') + '/ontology/document'
     RECOMMENDATION = settings.NEONION_BASE_NAMESPACE.rstrip('/') + '/ontology/recommendation'
+    CONCEPT_RECOMMENDATION = settings.NEONION_BASE_NAMESPACE.rstrip('/') + '/ontology/recommendation/concept'
+    PROPERTY_RECOMMENDATION = settings.NEONION_BASE_NAMESPACE.rstrip('/') + '/ontology/recommendation/property'
 
     ANNOTATION_STORE_GRAPH = settings.NEONION_BASE_NAMESPACE.rstrip('/') + '/annotationStore'
 

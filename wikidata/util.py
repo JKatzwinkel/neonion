@@ -11,7 +11,8 @@ related_types_query = '''values ?entity {{{entities}}} .
              wdt:P31 ?item}}
     union {{
         ?entity ?p ?obj .
-        ?obj wdt:P31 ?item }}'''
+        ?obj wdt:P31 ?item
+        MINUS {{ ?entity wdt:P279 ?obj }} }}'''
 
 superclasses_query = '''values ?type {{{types}}} .
     {{ ?type wdt:P279 ?supertype }}
@@ -23,12 +24,14 @@ def make_value_list(qids):
     return ' '.join(['wd:'+q for q in qids])
 
 
+def count(type_support_record):
+    return sum([len(objects) for prop,objects in type_support_record.items()])
 
-def types_related_to_entity_list(entities):
 
-    # entities = views.linked_entities_in_document(document_pk=document.id,
-    #         concept_id=concept.label)
-    # entities = [entity.split('/')[-1] for entity in entities]
+
+def types_related_to_entity_list(entities, concept_id, user_id):
+    """ takes a list of wikidata item page IDs, retrieves a bunch of statements involving those,
+    and extracts the classes of which related items are instances of. """
 
     res = wiki.sparql(related_types_query.format(entities=make_value_list(entities)))
 
@@ -47,11 +50,17 @@ def types_related_to_entity_list(entities):
         record[p] = record.get(p, []) + [i['type']['value']]
         types[i['supertype']['value']] = record
 
-    count = lambda tupel:sum([len(p) for p in tupel[1]])
+    ret = types
+    for t,rec in types.items():
+        ret[t]['count'] = count(rec)
+    #ret = sorted([(k,v) for k,v in ret.items()], key=count)
 
-    ret = sorted([(k,v) for k,v in types.items()], key=count)
 
-    return ret
+    return {
+            "concept_id": concept_id,
+            "user_id": user_id,
+            "related_types": ret
+            }
 
 
 

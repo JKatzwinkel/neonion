@@ -1,0 +1,16 @@
+from rest_framework import viewsets, status, serializers
+
+from wikidata.models import ConceptRecommendation
+
+
+class ConceptRecommendationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConceptRecommendation
+        fields = ('id', 'label', 'comment', 'concept', 'linked_concept', 'rejected', 'confidence')
+
+class ConceptRecommendationViewSet(viewsets.ModelViewSet):
+    queryset = ConceptRecommendation.objects.all()
+    serializer_class = ConceptRecommendationSerializer
+
+
+

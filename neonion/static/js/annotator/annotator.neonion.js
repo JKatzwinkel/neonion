@@ -575,6 +575,7 @@
             this.editorState.selectedConcept = "";
         },
 
+        // called when the annotation viewer is shown and provides the annotations being displayed.
         annotationViewerShown: function (viewer, annotations) {
             // avoid the viewer is overlapping the annotation highlight
             var viewerRect = viewer.element[0].getBoundingClientRect(),
@@ -607,6 +608,7 @@
             }
         },
 
+        // called when the text field displaying the annotation comment in the viewer is created.
         annotationViewerTextField: function (field, annotation) {
             if (annotation.hasOwnProperty("text") && annotation["text"].length > 0) {
                 $(field).show();
@@ -616,6 +618,7 @@
             }
         },
 
+        // called when the annotation editor is submitted.
         annotationEditorSubmit: function (editor, annotation) {
             if (annotation.hasOwnProperty("oa")) {
                 switch (annotation['oa']['motivatedBy']) {
@@ -677,6 +680,8 @@
             return adder;
         },
 
+        
+        // generates a hyperlink to a linked entity
         viewerLoadEntityField: function (field, annotation) {
             if (this.helper.getMotivationEquals(annotation, this.oa.motivation.classifying) ||
                 this.helper.getMotivationEquals(annotation, this.oa.motivation.identifying)) {

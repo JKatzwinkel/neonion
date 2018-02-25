@@ -90,7 +90,7 @@
             </a>
         </li>
 
-        <li class=""dropdown>
+        <li class="dropdown">
             <a id="nav-suggestions" class="dropdown-toggle"  data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
                data-tooltip="Suggestions" ng-click="checkForSuggestions()">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
@@ -118,6 +118,17 @@
               </tr>
 
             </table>
+        </li>
+
+
+        <li class="dropdown" ng-controller="AnnotatorCtrlExtended">
+          <a id="nav-recommendations" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expaned="false"
+                 data-tooltip="Recommendations" ng-click="openRecommendations()">
+            <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+
+          </a>
+
+
         </li>
     </ul>
 </nav>
