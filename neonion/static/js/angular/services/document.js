@@ -16,7 +16,7 @@ neonionApp.factory('DocumentService', ['$resource',
                         return names;
                     }
                 },
-                'save': {method: 'POST', url:'/api/documents/'},
+                'save': {method: 'POST', url: '/api/documents/'},
                 'update': {method: 'PUT'}
             });
     }]

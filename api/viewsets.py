@@ -22,8 +22,9 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['post'])
     def modify_document(self, request, pk, format=None):
-        if Document.objects.filter(id=request.data[pk]).exists():
-            document = Document.objects.get(pk)
+        # TODO ????? where's the modification?
+        if Document.objects.filter(id=request.data['id']).exists():
+            document = Document.objects.get(id=request.data['id'])
             document.save()
         return Response(status=status.HTTP_200_OK)
 

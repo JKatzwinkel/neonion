@@ -2,8 +2,8 @@
  * AnnotatorMenu controller
  */
 neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$cookies',
-    'cookieKeys', 'systemSettings', 'AnnotatorService', 'ConceptSetService',
-    function ($scope, $window, $location, $cookies, cookieKeys, systemSettings, AnnotatorService, ConceptSetService) {
+    'cookieKeys', 'systemSettings', 'AnnotatorService', 'ConceptSetService', 'DocumentService',
+    function ($scope, $window, $location, $cookies, cookieKeys, systemSettings, AnnotatorService, ConceptSetService, DocumentService) {
         "use strict";
 
         $scope.systemSettings = systemSettings;
@@ -124,16 +124,16 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
         };
 
         $scope.switchConceptSet = function(conceptSetId) {
-            console.log('change concept set to '+conceptSetId);
             $scope.document.concept_set = conceptSetId;
 
             ConceptSetService.getDeep({id: conceptSetId},
                 function (conceptSet) {
                     $scope.conceptSet = conceptSet
                 }).$promise.then(function(data){
+
                     AnnotatorService.annotator().plugins.neonion.conceptSet($scope.conceptSet.concepts);
-                    //$scope.document.$update($scope.return);
-                    $scope.document.$save();
+                    DocumentService.update({'id':$scope.document.id}, $scope.document);
+
             });
         }
 
