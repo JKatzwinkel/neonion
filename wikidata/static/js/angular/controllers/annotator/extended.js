@@ -47,18 +47,32 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	}
 
 	$scope.openRecommendations = function() {
-		if (!$scope.annotator) {
-			console.log('OK better subscribe to this annotator');
-	    $scope.annotator = angular.element("#document-body").data("annotator");
-	    $scope.annotator.subscribe("annotationEditorSubmit", $scope.updateRecommender)
-											.subscribe("annotationDeleted", $scope.updateRecommender);
-		}
 	};
 
   $scope.$on('allPagesRendered', function (event) {
 		console.log('annotator fragezeichen');
 		console.log( $scope.annotator);
   });
+
+	var initialHookJob = $interval(function() {
+		console.log('hook up wikidata/recommender extensions with annotator.js');
+		if (!$scope.annotator) {
+			console.log('OK better subscribe to this annotator');
+	    $scope.annotator = angular.element("#document-body").data("annotator");
+	    $scope.annotator.subscribe("annotationEditorSubmit", $scope.updateRecommender)
+											.subscribe("annotationDeleted", $scope.updateRecommender);
+			initialHookJob = undefined;
+		}
+	}, 5000);
+
+	var recommendationLabelResolverJob = $interval(function() {
+		console.log('running scheduled label resolving job');
+		for (var i=0; i<$scope.recommendedTerms.length; i++) {
+			var term = $scope.recommendedTerms[i];
+			//
+		}
+	}, 6000);
+
 
 
 }]);
