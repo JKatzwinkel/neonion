@@ -1,7 +1,8 @@
 import json
+import uuid
 
 from annotationsets.models import Concept, LinkedConcept
-from wikidata.models import ConceptRecommendation
+from wikidata.models import ConceptRecommendation, PropertyRecommendation, ReasonForRecommendation
 
 class BasicRecommender:
 
@@ -40,7 +41,7 @@ def heute_abend_wird_ehrenlos(data):
             # einfach erzeugen das ding 1fach mal aus scheisz
             linked_concept = LinkedConcept.objects.create(
                     linked_type=type_item_url,
-                    id=type_item_id)
+                    id=uuid.uuid1().hex)
 
         # ok jetzt wo wir das linked concept schonmal in der hand halten, koennen wir auch gleich paar subclass of beziehungen drunterwemmsen
         subclasses = support_record.get('https://www.wikidata.org/wiki/Property:P279',[]) #TODO
@@ -53,24 +54,32 @@ def heute_abend_wird_ehrenlos(data):
             except:
                 pass
 
+        # egal man einfach schonmal abspeichern
+        linked_concept.save()
 
         # ok das haetten wir aber jetzt wird aufregend
         try:
             concept_recommendation = ConceptRecommendation.objects.get(
-                    linked_concept_id=type_item_id)
+                    linked_concept_id=linked_concept.id)#XXX unique constraint failed
         except ConceptRecommendation.DoesNotExist:
             # wir legen einfach so ein objekt an als waere es nichts hahaha!
             concept_recommendation = ConceptRecommendation.objects.create(
+                    id=uuid.uuid1().hex,
                     linked_concept=linked_concept,
-                    confidence=support_record.get('count'),
-                    user_id=support_record.get('user_id'),
-                    comment='Closely related to annoted entities of type {}.'.format(classifier_id))
+                    user_id=support_record.get('user_id'))#TODO das musz man anders machen
+
+
 
         # jetzt paar geile hard facts da rein schlaumeiern
         #TODO
+        # mit begruendung sogar
+        reason = ReasonForRecommendation.objects.create(
+                label='Closely related to annoted entities of type {}.'.format(classifier_id))
+        concept_recommendation.reasons.add(reason)
+        concept_recommendation.confidence=support_record.get('count')
+
 
         # dann speichern
-        linked_concept.save()
         concept_recommendation.save()
 
 
