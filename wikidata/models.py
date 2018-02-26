@@ -9,12 +9,12 @@ class ConceptRecommendation(ResourceMixin, models.Model):
 
     user = models.ForeignKey(User, blank=True, null=True)
 
-    concept = models.ForeignKey(Concept, blank=True, null=True, on_delete=models.SET_NULL)
+    concept = models.ForeignKey(Concept, blank=True, null=True)
     linked_concept = models.ForeignKey(LinkedConcept, blank=False, on_delete=models.CASCADE)
 
     rejected = models.NullBooleanField(null=True, default=False)
 
-    confidence = models.DecimalField(decimal_places=2, max_digits=3)
+    confidence = models.DecimalField(decimal_places=2, max_digits=6)
 
     class_uri = neonion.CONCEPT_RECOMMENDATION
 
