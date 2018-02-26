@@ -61,7 +61,7 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	    $scope.annotator = angular.element("#document-body").data("annotator");
 	    $scope.annotator.subscribe("annotationEditorSubmit", $scope.updateRecommender)
 											.subscribe("annotationDeleted", $scope.updateRecommender);
-			initialHookJob = undefined;
+			$interval.cancel(initialHookJob);
 		}
 	}, 5000);
 

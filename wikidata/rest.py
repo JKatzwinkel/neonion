@@ -6,7 +6,7 @@ from wikidata.models import ConceptRecommendation
 class ConceptRecommendationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConceptRecommendation
-        fields = ('id', 'label', 'comment', 'concept', 'linked_concept', 'rejected', 'confidence')
+        fields = ('id', 'label', 'comment', 'concept', 'linked_concept', 'dismissed', 'confidence')
 
 class ConceptRecommendationViewSet(viewsets.ModelViewSet):
     queryset = ConceptRecommendation.objects.all()
