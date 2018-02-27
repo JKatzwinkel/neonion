@@ -123,11 +123,16 @@
 
         <li class="dropdown" ng-controller="AnnotatorCtrlExtended">
           <a id="nav-recommendations" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expaned="false"
-                 data-tooltip="Recommendations" ng-click="openRecommendations()">
-            <i class="fa fa-lightbulb-o" aria-hidden="true" style="color:red"></i>
-						<span class="nav-bar-indicator" style="font-size:xx-small" ng-hide="recommendationCount() < 1">
-              {{ recommendationCount() }}
-            </span>
+                 data-tooltip="Recommendations" ng-click="openRecommendations()" ng-switch on=" recommendationCount() > 0 ">
+              <div ng-switch-when=" true ">
+                <i class="fa fa-lightbulb-o" aria-hidden="true" style="color:red"></i>
+                <span class="nav-bar-indicator" style="font-size:xx-small" ng-hide="recommendationCount() < 1">
+                  {{ recommendationCount() }}
+                </span>
+              </div>
+              <div ng-switch-default>
+                <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+              </div>  
           </a>
 
 
@@ -142,7 +147,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="recommendations-menu-entry" ng-repeat="(id, recommendation) in recommended " >
+                    <tr class="recommendations-menu-entry" ng-repeat=" recommendation in recommended() " >
                         <td title="{{ recommendation.comment }}" class="recommendations-menu-item">
                             <b>{{ recommendation.label }}</b>
                             <a href="{{ recommendation.linked_resource }}">
