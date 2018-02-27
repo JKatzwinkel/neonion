@@ -1,5 +1,6 @@
 import json
 import uuid
+from datetime import datetime
 
 from annotationsets.models import Concept, LinkedConcept
 from wikidata.models import ConceptRecommendation, PropertyRecommendation, ReasonForRecommendation
@@ -54,33 +55,46 @@ def heute_abend_wird_ehrenlos(data):
             except:
                 pass
 
+        linked_concept.comment = 'Wikidata class {}'.format(type_item_id)
+        linked_concept.retrieved_at = datetime.now()
         # egal man einfach schonmal abspeichern
         linked_concept.save()
 
+
         # ok das haetten wir aber jetzt wird aufregend
-        try:
-            concept_recommendation = ConceptRecommendation.objects.get(
-                    linked_concept_id=linked_concept.id)#XXX unique constraint failed
-        except ConceptRecommendation.DoesNotExist:
-            # wir legen einfach so ein objekt an als waere es nichts hahaha!
-            concept_recommendation = ConceptRecommendation.objects.create(
-                    id=uuid.uuid1().hex,
-                    linked_concept=linked_concept,
-                    user_id=support_record.get('user_id'))#TODO das musz man anders machen
+        # aber wtf tho das macht eigentlich nur sinn wenn es nicht schon ein concept dafuer gibt lachkick
+
+        # also nur unter folgender bedingung:
+        if len(Concept.objects.filter(linked_concepts__linked_type__endswith=type_item_id)) < 1:
+            #
+            # in diesem fall sollten wir bei bedarf ein conceptrecommendation objekt anlegen, sonst aber nicht
+            # weil es gibt das richtige konzept ja schon.
+            # wenn es das konzept noch nicht gibt, kann man gucken ob man geeignete conceptrecommendation findet
+            # und wenn nicht eine anlegen
+
+            try:
+                concept_recommendation = ConceptRecommendation.objects.get(
+                        linked_concept_id=linked_concept.id)
+            except ConceptRecommendation.DoesNotExist:
+                # wir legen einfach so ein objekt an als waere es nichts hahaha!
+                concept_recommendation = ConceptRecommendation.objects.create(
+                        id=uuid.uuid1().hex,
+                        linked_concept=linked_concept,
+                        user_id=support_record.get('user_id'))#TODO das musz man anders machen
 
 
 
-        # jetzt paar geile hard facts da rein schlaumeiern
-        #TODO
-        # mit begruendung sogar
-        reason = ReasonForRecommendation.objects.create(
-                label='Closely related to annoted entities of type {}.'.format(classifier_id))
-        concept_recommendation.reasons.add(reason)
-        concept_recommendation.confidence=support_record.get('count')
+            # jetzt paar geile hard facts da rein schlaumeiern
+            #TODO
+            # mit begruendung sogar
+            reason = ReasonForRecommendation.objects.create(
+                    label='Closely related to annoted entities of type {}.'.format(classifier_id))
+            concept_recommendation.reasons.add(reason)
+            concept_recommendation.confidence=support_record.get('count')
 
 
-        # dann speichern
-        concept_recommendation.save()
+            # dann speichern
+            concept_recommendation.save()
 
 
 

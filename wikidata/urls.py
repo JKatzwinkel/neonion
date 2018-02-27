@@ -17,7 +17,9 @@ urlpatterns = [
         url(r'^entities/doc/(?P<document_pk>.+)/?$', 'wikidata.views.linked_entities_in_document'),
         url(r'^related/types/doc/(?P<document_pk>.+)/concept/(?P<concept_id>.*)$', 'wikidata.views.types_related_to_entities_in_document'),
         url(r'^statements/doc/(?P<document_pk>.+)/linked/?$', 'wikidata.views.annotated_statements'),
-        url(r'^statements/doc/(?P<document_pk>.+)/implicit/?$', 'wikidata.views.implicit_statements')
+        url(r'^statements/doc/(?P<document_pk>.+)/implicit/?$', 'wikidata.views.implicit_statements'),
+
+        url(r'^entities/label/(?P<item_id>.+)/?$', 'wikidata.views.resolve_item_labels')
 
         ]
 

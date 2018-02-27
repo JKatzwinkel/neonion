@@ -242,6 +242,16 @@ def annotated_statements_as_json(params, document_pk):
     return statements
 
 
+def resolve_item_labels(request, item_id):
+    params = dict(request.GET)
+    item = wiki.item(item_id)
+    return JsonResponse({
+        'label': wiki.label(item),
+        'description': wiki.description(item)
+        })
+
+
+
 #TODO uncomment, add group_pk
 #@require_group_permission
 def annotated_statements(request, document_pk):

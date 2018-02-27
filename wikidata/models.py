@@ -15,14 +15,18 @@ class ReasonForRecommendation(ResourceMixin, models.Model):
         for k,v in kwargs.items():
             self.__dict__[k] = v
 
+    objects = models.Manager
+
     class Meta:
         app_label = "wikidata"
 
-class Recommendation(ResourceMixin):
+
+class Recommendation(ResourceMixin, models.Model):
     user = models.ForeignKey(User, blank=True, null=True)
     dismissed = models.NullBooleanField(blank=True, null=True, default=False)
     confidence = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     reasons = models.ManyToManyField(ReasonForRecommendation, blank=True)
+    objects = models.Manager
 
     def __str__(self):
         return '{} ({})'.format(self.label, self.confidence)
@@ -38,8 +42,10 @@ class ConceptRecommendation(Recommendation):
 
     class_uri = neonion.CONCEPT_RECOMMENDATION
 
+
     class Meta:
         app_label = "wikidata"
+        ordering = ["-confidence"]
 
 
 class PropertyRecommendation(Recommendation):

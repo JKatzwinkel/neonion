@@ -75,6 +75,16 @@ def label(entity, lang='en'):
     for v in labels.values():
       return v
 
+def description(entity, lang='en'):
+    """ returns entity description in specified language """
+    desc = entity.get().get('descriptions', {})
+    if lang in desc:
+        return desc.get(lang)
+    else:
+        for v in desc.values():
+            return v
+
+
 def object_labels(entity, prop='P279'):
     """ returns a list, containing the labels of all targets of this entity's statements of given property """
     claims = entity.get().get('claims',{}).get(prop,[])
