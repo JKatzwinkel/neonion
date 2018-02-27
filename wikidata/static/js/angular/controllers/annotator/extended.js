@@ -82,7 +82,7 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 											.subscribe("annotationDeleted", $scope.updateRecommender);
 			$interval.cancel(initialHookJob);
 		}
-	}, 5000);
+	}, 1000);
 
 
 	// reifies the recommended vocabulary term itself (linked_property e.g.) and extracts 
@@ -90,7 +90,6 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	$scope.resolveLinkedResource = function(term) {
 		LinkedConceptService.get({id: term.linked_concept},
 			function(linked_concept){
-				//$scope.recommended[term.id].
 				term.linked_resource = linked_concept.linked_type;
 			}
 		);
