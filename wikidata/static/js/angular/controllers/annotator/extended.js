@@ -1,5 +1,5 @@
-neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resource', '$interval', '$timeout', 'LinkedConceptService',
-	function($scope, $controller, $resource, $interval, $timeout, LinkedConceptService) {
+neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resource', '$interval', '$timeout', 'LinkedConceptService', 'LinkedPropertyService',
+	function($scope, $controller, $resource, $interval, $timeout, LinkedConceptService, LinkedPropertyService) {
 
 	angular.extend(this, $controller('AnnotatorCtrl', {$scope: $scope}));
 	$scope.annotator = undefined;
@@ -110,44 +110,82 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	// reifies the recommended vocabulary term itself (linked_property e.g.) and extracts 
 	// the linked resource (linked_type e.g.) so that it can be accessed in html template
 	$scope.resolveLinkedResource = function(term) {
-		LinkedConceptService.get({id: term.linked_concept},
-			function(linked_concept){
-				term.linked_resource = linked_concept.linked_type;
-			}
-		);
+		if (term.hasOwnProperty('linked_concept')) {
+			LinkedConceptService.get({id: term.linked_concept},
+				function(linked_concept){
+					term.linked_resource = linked_concept.linked_type;
+				}
+			);
+		} else if (term.hasOwnProperty('linked_property')) {
+			LinkedPropertyService.get({id: term.linked_property},
+				function(linked_property){
+					term.linked_resource = linked_property.linked_property;
+				}
+			);
+		}
 	}
 
 	// gets label and description for a linkedconcept linked to a recommendation and updates recommendation accordingly
 	$scope.resolveLabels = function(term) {
-		LinkedConceptService.get({id: term.linked_concept},
-			function(linked_concept){
+		if (term.hasOwnProperty('linked_concept')) {
+			LinkedConceptService.get({id: term.linked_concept},
+				function(linked_concept){
 
-				// if linked_concept linked to recommendation has no label itself, we need to query wiki module
-				if (linked_concept.label.length < 1) {
-					$scope.WikidataItemLabelResolver.get({id: linked_concept.linked_type},
-						function(label_desc) {
-							term.label = label_desc.label;
-							linked_concept.label = label_desc.label;
-							linked_concept.comment = label_desc.description;
-							linked_concept.$update();
+					// if linked_concept linked to recommendation has no label itself, we need to query wiki module
+					if (linked_concept.label.length < 1) {
+						$scope.WikidataItemLabelResolver.get({id: linked_concept.linked_type},
+							function(label_desc) {
+								term.label = label_desc.label;
+								linked_concept.label = label_desc.label;
+								linked_concept.comment = label_desc.description;
+								linked_concept.$update();
 
-						}).$promise.then(function(){
-			
-
-						// then we need to retrieve a fresh instance of the recommendation object (in order to be able to $update)
-						// and we can update its label and description just like we did with its linked concept
-						$scope.ConceptRecommendations.get({id: term.id},
-							function(recommendation) {
-								console.log('recommendation:');
-								console.log(recommendation);
-								recommendation.label = linked_concept.label;
-								recommendation.comment = linked_concept.comment;
-								recommendation.$update();
-							});
-					});
+							}).$promise.then(function(){
+				
+							// then we need to retrieve a fresh instance of the recommendation object (in order to be able to $update)
+							// and we can update its label and description just like we did with its linked concept
+							$scope.ConceptRecommendations.get({id: term.id},
+								function(recommendation) {
+									console.log('recommendation:');
+									console.log(recommendation);
+									recommendation.label = linked_concept.label;
+									recommendation.comment = linked_concept.comment;
+									recommendation.$update();
+								});
+						});
+					}
 				}
-			}
-		);
+			);
+		} else if (term.hasOwnProperty('linked_property')) {
+			LinkedPropertyService.get({id: term.linked_property},
+				function(linked_property){
+
+					// if linked_concept linked to recommendation has no label itself, we need to query wiki module
+					if (linked_property.label.length < 1) {
+						$scope.WikidataItemLabelResolver.get({id: linked_property.linked_property},
+							function(label_desc) {
+								term.label = label_desc.label;
+								linked_property.label = label_desc.label;
+								linked_property.comment = label_desc.description;
+								linked_property.$update();
+
+							}).$promise.then(function(){
+				
+							// then we need to retrieve a fresh instance of the recommendation object (in order to be able to $update)
+							// and we can update its label and description just like we did with its linked concept
+							$scope.PropertyRecommendations.get({id: term.id},
+								function(recommendation) {
+									console.log('recommendation:');
+									console.log(recommendation);
+									recommendation.label = linked_property.label;
+									recommendation.comment = linked_property.comment;
+									recommendation.$update();
+								});
+						});
+					}
+				}
+			);
+		}
 
 	};
 
@@ -171,8 +209,10 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 
 	// schedule job that frequently resolves labels of current recommendations, if necessary
 	var recommendationLabelResolverJob = $interval(function() {
-			Object.keys($scope._recommendationDict.concepts).forEach(function(id){
-				var term = $scope._recommendationDict.concepts[id];
+			Object.values($scope._recommendationDict.concepts).concat(
+				Object.values($scope._recommendationDict.properties)
+			)
+			.forEach(function(term){
 				if (!term.label || term.label.length < 1) {
 					$scope.resolveLabels(term);
 				} 
@@ -184,6 +224,7 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	}, 6000);
 
   var checkforRecommendationsJob = $interval(function() {
+		// get concept recommendation from database
 		$scope.ConceptRecommendations.query({},
 			function(results) {
 				results.forEach(function(result){
@@ -191,7 +232,18 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 						$scope._recommendationDict.concepts[result.id] = result;
 					}
 				});
-			})
+			}
+		);
+		// get property recommendations from database
+		$scope.PropertyRecommendations.query({},
+			function(results) {
+				results.forEach(function(result){
+					if (!$scope._recommendationDict.properties.hasOwnProperty(result.id)) {
+						$scope._recommendationDict.properties[result.id] = result;
+					}
+				});
+			}
+		);
 	}, 10000);
 
 	$scope.$on('$destroy', function() {

@@ -244,7 +244,8 @@ def annotated_statements_as_json(params, document_pk):
 
 def resolve_item_labels(request, item_id):
     params = dict(request.GET)
-    item = wiki.item(item_id)
+    wdid = re.findall('[PQ][0-9]+$', item_id)[0]
+    item = wiki.item(item_id) if wdid.startswith('Q') else wiki.prop(item_id)
     return JsonResponse({
         'label': wiki.label(item) or "",
         'description': wiki.description(item) or ""
