@@ -51,6 +51,11 @@ class PropertyRecommendation(Recommendation):
     property = models.ForeignKey(Property, blank=True, null=True)
     linked_property = models.ForeignKey(LinkedProperty, blank=False, on_delete=models.CASCADE)
 
+    domain = models.ManyToManyField(LinkedConcept, blank=False, related_name='property_recommendation_from')
+    range = models.ManyToManyField(LinkedConcept, blank=True, related_name='property_recommendation_to')
+
+
+
     class_uri = neonion.PROPERTY_RECOMMENDATION
 
 
