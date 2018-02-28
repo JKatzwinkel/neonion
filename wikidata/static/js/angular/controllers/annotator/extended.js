@@ -29,6 +29,11 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 			'update': {method: 'PUT'},
 		}
 	);
+		//
+		$scope.AcceptConceptRecommendation = $resource('/wikidata/recommendedconcepts/accept/:recId/:conceptsetId', {recId:'@recId',conceptsetId:'@conceptsetId'},
+			{
+				'get': {method: 'GET'},
+			});
 
 
 	// actual vocabulary recommendations
@@ -194,15 +199,42 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 			console.log('recommendation '+termrec.label);
 			if (confirm) {
 				// TODO
+				// TODO abstract
+				if (termrec.hasOwnProperty('linked_concept')) {
+					console.log('ok try to confirm recommended concept');
+					$scope._recommendationDict.concepts[termrec.id] = {dismissed:true};
+					$scope.AcceptConceptRecommendation.get({recId:termrec.id,conceptsetId:$scope.document.concept_set},
+						function(data) {
+							console.log('yay!');
+
+							console.log(data);
+							$scope.switchConceptSet($scope.document.concept_set);
+						});
+
+				} else if (termrec.hasOwnProperty('linked_concept')) {
+
+				}
 			} else {
-				$scope.ConceptRecommendations.get({id: termrec.id},
-					function(recommendation) {
-						console.log('recommendation dismissed:');
-						console.log(recommendation);
-						recommendation.dismissed = true;
-						$scope._recommendationDict.concepts[recommendation.id] = {dismissed:true};
-						recommendation.$update();
-					});
+				// TODO abstract
+				if (termrec.hasOwnProperty('linked_concept')) {
+					$scope.ConceptRecommendations.get({id: termrec.id},
+						function(recommendation) {
+							console.log('recommendation dismissed:');
+							console.log(recommendation);
+							recommendation.dismissed = true;
+							$scope._recommendationDict.concepts[recommendation.id] = {dismissed:true};
+							recommendation.$update();
+						});
+				} else if (termrec.hasOwnProperty('linked_concept')) {
+					$scope.PropertyRecommendations.get({id: termrec.id},
+						function(recommendation) {
+							console.log('recommendation dismissed:');
+							console.log(recommendation);
+							recommendation.dismissed = true;
+							$scope._recommendationDict.properties[recommendation.id] = {dismissed:true};
+							recommendation.$update();
+						});
+				}
 			}
 		}
 

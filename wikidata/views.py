@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
+from django.core import serializers
 
 from annotationsets.models import Concept, LinkedConcept, Property, LinkedProperty
 import store
@@ -244,7 +245,7 @@ def annotated_statements_as_json(params, document_pk):
 
 def resolve_item_labels(request, item_id):
     params = dict(request.GET)
-    wdid = re.findall('[PQ][0-9]+$', item_id)[0]
+    wdid = wiki.extract_id(item_id)
     item = wiki.item(item_id) if wdid.startswith('Q') else wiki.prop(item_id)
     return JsonResponse({
         'label': wiki.label(item) or "",
@@ -252,9 +253,15 @@ def resolve_item_labels(request, item_id):
         })
 
 
+def accept_concept_recommendation(request, recommendation_id, conceptset_id):
+    params = dict(request.GET)
+    concept = recommender.accept_concept(recommendation_id, conceptset_id)
+    return JsonResponse(serializers.serialize('json', [concept]), safe=False)
+
 
 #TODO uncomment, add group_pk
 #@require_group_permission
+@require_GET
 def annotated_statements(request, document_pk):
     params = dict(request.GET)
     statements = annotated_statements_as_json(params, document_pk)

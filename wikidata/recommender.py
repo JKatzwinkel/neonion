@@ -2,9 +2,10 @@ import json
 import uuid
 from datetime import datetime
 
-from annotationsets.models import Concept, LinkedConcept, LinkedProperty, Property
+from annotationsets.models import ConceptSet, Concept, LinkedConcept, LinkedProperty, Property
 from wikidata.models import ConceptRecommendation, PropertyRecommendation, ReasonForRecommendation
 from wikidata.util import median
+from wikidata import wiki
 
 class BasicRecommender:
 
@@ -91,6 +92,33 @@ def get_linked_property(purl):
     return linked_property
 
 
+def accept_concept(recommendation_id, conceptset_id):
+    # retrieve conceptset
+    conceptset = ConceptSet.objects.get(id=conceptset_id)
+    # reify recommendation
+    recommendation = ConceptRecommendation.objects.get(id=recommendation_id)
+    # retrieve linked concept
+    linked_concept = recommendation.linked_concept
+    # create concept if there is none (its unlikely that there is)
+    if not recommendation.concept:
+        wdid = wiki.extract_id(linked_concept.linked_type)
+        concept = Concept.objects.create(
+                id=wdid,
+                label=recommendation.label,
+                comment=recommendation.comment)
+        concept.linked_concepts.add(linked_concept)
+        concept.save()
+    conceptset.concepts.add(concept)
+    conceptset.save()
+    recommendation.dismissed = True
+    recommendation.save()
+    return concept
+
+
+
+
+
+
 
 
 def heute_abend_wird_ehrenlos(data):
@@ -124,18 +152,11 @@ def heute_abend_wird_ehrenlos(data):
             except:
                 pass
 
-
-
-
         # egal man einfach schonmal abspeichern
         linked_concept.save()
 
-
         # ok das haetten wir aber jetzt wird aufregend
-        # aber wtf tho das macht eigentlich nur sinn wenn es nicht schon ein concept dafuer gibt lachkick
-
         make_concept_recommendation_if_necessary(type_item_id, linked_concept, classifier_id, support_record)
-
 
     # ok jetzt properties
     # linked concept fuer property domain
