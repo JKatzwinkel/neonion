@@ -1,5 +1,5 @@
-neonionApp.controller('ConceptListCtrl', ['$scope', '$sce', 'CommonService', 'ConceptService', 'PropertyService',
-        function ($scope, $sce, CommonService, ConceptService, PropertyService) {
+neonionApp.controller('ConceptListCtrl', ['$scope', '$sce', 'CommonService', 'ConceptService', 'PropertyService', 'LinkedConceptService',
+        function ($scope, $sce, CommonService, ConceptService, PropertyService, LinkedConceptService) {
             "use strict";
 
             $scope.listModeEnabled = true;
@@ -37,6 +37,23 @@ neonionApp.controller('ConceptListCtrl', ['$scope', '$sce', 'CommonService', 'Co
 
             $scope.getItemHeader = function (resource) {
                 return $sce.trustAsHtml(resource.label);
+            };
+
+            $scope.getItemExternal = function(resource){
+                if (!resource.external_ids) {
+                    resource.external_ids = [];
+                    resource.linked_concepts.forEach(function(lc){
+                        LinkedConceptService.get({id: lc},
+                            function(result){
+                                resource.external_ids.push(
+                                  result.linked_type.split('/').pop());
+                            })
+                        }
+                    );
+                }
+                return $sce.trustAsHtml(
+                  resource.external_ids.join(' | ')
+                );
             };
 
             $scope.getItemDescription = function (resource) {

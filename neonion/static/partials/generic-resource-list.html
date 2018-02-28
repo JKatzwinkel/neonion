@@ -16,6 +16,7 @@
                         ng-click="editItem(resource)"
                         ng-repeat="resource in resources | filter:filterResources | orderBy : 'label'">
                     <b class="list-group-item-heading" ng-bind-html="getItemHeader(resource)"></b>
+                    <span class="list-group-item-ext-ids" ng-bind-html="getItemExternal(resource)"></span>
 
                     <p class="list-group-item-text" ng-show="getItemDescription"
                        ng-bind-html="getItemDescription(resource)"></p>

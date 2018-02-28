@@ -7739,6 +7739,10 @@ a.list-group-item .list-group-item-heading,
 button.list-group-item .list-group-item-heading {
   color: #333333;
 }
+.list-group-item-ext-ids {
+	font-size: small;
+	font-style: italic;
+}
 a.list-group-item:hover,
 button.list-group-item:hover,
 a.list-group-item:focus,
