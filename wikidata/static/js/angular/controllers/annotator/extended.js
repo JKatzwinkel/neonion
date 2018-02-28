@@ -12,7 +12,13 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 			'run': {method: 'PUT'}
 		}
 	);
-	$scope.Recommendations = $resource('/wikidata/recommendedconcepts/:id', {id:'@id'},
+	$scope.PropertyRecommendations = $resource('/wikidata/recommendedproperties/:id', {id:'@id'},
+		{
+			'get': {method: 'GET'},
+			'update': {method: 'PUT'},
+		}
+	);
+	$scope.ConceptRecommendations = $resource('/wikidata/recommendedconcepts/:id', {id:'@id'},
 		{
 			'get': {method: 'GET'},
 			'update': {method: 'PUT'},
@@ -26,11 +32,12 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 
 
 	// actual vocabulary recommendations
-	$scope._recommendationDict = {};
+	$scope._recommendationDict = {
+		concepts: {},
+		properties: {}
+	};
 
-	// function for recommendation access by template
-	$scope.recommended = function(){
-		return Object.values($scope._recommendationDict).filter(function(rec) {
+		var displayFilter = function(rec) {
 			if (rec.dismissed) {
 				return false;
 			}
@@ -38,7 +45,14 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 				return false;
 			}
 			return true;
-		});
+		} 
+
+	// function for recommendation access by template
+	$scope.recommended = function(){
+		return Object.values(
+			$scope._recommendationDict.concepts).filter(displayFilter)
+			.concat(Object.values(
+				$scope._recommendationDict.properties).filter(displayFilter));
 	}
 
 	$scope.recommendationCount = function() {
@@ -122,7 +136,7 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 
 						// then we need to retrieve a fresh instance of the recommendation object (in order to be able to $update)
 						// and we can update its label and description just like we did with its linked concept
-						$scope.Recommendations.get({id: term.id},
+						$scope.ConceptRecommendations.get({id: term.id},
 							function(recommendation) {
 								console.log('recommendation:');
 								console.log(recommendation);
@@ -143,12 +157,12 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 			if (confirm) {
 				// TODO
 			} else {
-				$scope.Recommendations.get({id: termrec.id},
+				$scope.ConceptRecommendations.get({id: termrec.id},
 					function(recommendation) {
 						console.log('recommendation dismissed:');
 						console.log(recommendation);
 						recommendation.dismissed = true;
-						$scope._recommendationDict[recommendation.id] = {dismissed:true};
+						$scope._recommendationDict.concepts[recommendation.id] = {dismissed:true};
 						recommendation.$update();
 					});
 			}
@@ -157,8 +171,8 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 
 	// schedule job that frequently resolves labels of current recommendations, if necessary
 	var recommendationLabelResolverJob = $interval(function() {
-			Object.keys($scope._recommendationDict).forEach(function(id){
-				var term = $scope._recommendationDict[id];
+			Object.keys($scope._recommendationDict.concepts).forEach(function(id){
+				var term = $scope._recommendationDict.concepts[id];
 				if (!term.label || term.label.length < 1) {
 					$scope.resolveLabels(term);
 				} 
@@ -170,11 +184,11 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	}, 6000);
 
   var checkforRecommendationsJob = $interval(function() {
-		$scope.Recommendations.query({},
+		$scope.ConceptRecommendations.query({},
 			function(results) {
 				results.forEach(function(result){
-					if (!$scope._recommendationDict.hasOwnProperty(result.id)) {
-						$scope._recommendationDict[result.id] = result;
+					if (!$scope._recommendationDict.concepts.hasOwnProperty(result.id)) {
+						$scope._recommendationDict.concepts[result.id] = result;
 					}
 				});
 			})
