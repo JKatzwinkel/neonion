@@ -86,7 +86,7 @@ class LinkedConceptSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkedConcept
         fields = ('id', 'uri', 'label', 'comment', 'endpoint', 'linked_type',
-                  'custom_query', 'provider_class', 'retrieved_at')
+                  'custom_query', 'provider_class', 'retrieved_at', 'super_types')
         read_only_fields = ('retrieved_at',)
 
 
