@@ -107,6 +107,7 @@ def accept_concept(recommendation_id, conceptset_id):
                 label=recommendation.label,
                 comment=recommendation.comment)
         concept.linked_concepts.add(linked_concept)
+        #TODO properties reinfummeln
         concept.save()
     conceptset.concepts.add(concept)
     conceptset.save()
@@ -115,9 +116,32 @@ def accept_concept(recommendation_id, conceptset_id):
     return concept
 
 
+def accept_property(recommendation_id, conceptset_id):
+    conceptset = ConceptSet.objects.get(id=conceptset_id)
+    recommendation = PropertyRecommendation.objects.get(id=recommendation_id)
+    linked_property = recommendation.linked_property
+    # erstmal property bauen
+    # wenn keine da ist
+    if len(Property.objects.filter(linked_properties=linked_property)) < 1:
+        wdid = wiki.extract_id(linked_property.linked_property)
+        prop = Property.objects.create(id=wdid,
+                label=recommendation.label,
+                comment=recommendation.comment)
+        prop.linked_properties.add(linked_property)
 
+        # ufff
+        #TODO domain
+        domain = Concept.objects.filter(linked_concepts__in=recommendation.domain.all())
+        for concept in domain:
+            concept.properties.add(prop)
+            concept.save()
+        # range
+        prop.range.add(Concept.objects.filter(linked_concepts__in=recommendation.range.all()))
+        prop.save()
 
-
+    recommendation.dismissed = True
+    recommendation.save()
+    return prop
 
 
 
@@ -148,6 +172,7 @@ def heute_abend_wird_ehrenlos(data):
                 sub = LinkedConcept.objects.get(linked_type=subclass_url)
                 if len(sub.super_types.filter(id=linked_concept.id)) < 1:
                     sub.super_types.add(linked_concept)
+                    sub.save()
                 #TODO umgekehrt waere auch geil, aso bei der eigenen superklasse sich drunter haengen aber schonmal besser als nichts
             except:
                 pass
@@ -185,7 +210,7 @@ def heute_abend_wird_ehrenlos(data):
                         linked_property__linked_property__endswith=pid)
             except PropertyRecommendation.DoesNotExist:
                 property_recommendation = PropertyRecommendation.objects.create(
-                        id=linked_property.id+'recommendation',
+                        id=linked_property.id+'rec',
                         linked_property=linked_property,
                         comment=pid)
 

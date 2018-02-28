@@ -34,6 +34,10 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 			{
 				'get': {method: 'GET'},
 			});
+		$scope.AcceptPropertyRecommendation = $resource('/wikidata/recommendedproperties/accept/:recId/:conceptsetId', {recId:'@recId',conceptsetId:'@conceptsetId'},
+			{
+				'get': {method: 'GET'},
+			});
 
 
 	// actual vocabulary recommendations
@@ -200,18 +204,23 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 			if (confirm) {
 				// TODO
 				// TODO abstract
+				console.log('ok try to confirm recommended concept');
 				if (termrec.hasOwnProperty('linked_concept')) {
-					console.log('ok try to confirm recommended concept');
 					$scope._recommendationDict.concepts[termrec.id] = {dismissed:true};
 					$scope.AcceptConceptRecommendation.get({recId:termrec.id,conceptsetId:$scope.document.concept_set},
 						function(data) {
 							console.log('yay!');
-
-							console.log(data);
 							$scope.switchConceptSet($scope.document.concept_set);
 						});
 
-				} else if (termrec.hasOwnProperty('linked_concept')) {
+				} else if (termrec.hasOwnProperty('linked_property')) {
+					$scope._recommendationDict.properties[termrec.id] = {dismissed:true};
+					$scope.AcceptPropertyRecommendation.get({recId:termrec.id,conceptsetId:$scope.document.concept_set},
+						function(data) {
+							console.log('yay!');
+							// XXX wahrscheinlich muessen wir woanders nochmal properties nachladen im relations overlay oder so
+							$scope.switchConceptSet($scope.document.concept_set);
+						});
 
 				}
 			} else {
@@ -225,7 +234,7 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 							$scope._recommendationDict.concepts[recommendation.id] = {dismissed:true};
 							recommendation.$update();
 						});
-				} else if (termrec.hasOwnProperty('linked_concept')) {
+				} else if (termrec.hasOwnProperty('linked_property')) {
 					$scope.PropertyRecommendations.get({id: termrec.id},
 						function(recommendation) {
 							console.log('recommendation dismissed:');

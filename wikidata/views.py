@@ -256,7 +256,12 @@ def resolve_item_labels(request, item_id):
 def accept_concept_recommendation(request, recommendation_id, conceptset_id):
     params = dict(request.GET)
     concept = recommender.accept_concept(recommendation_id, conceptset_id)
-    return JsonResponse(serializers.serialize('json', [concept]), safe=False)
+    return serializers.serialize('json', [concept])
+
+def accept_property_recommendation(request, recommendation_id, conceptset_id):
+    params = dict(request.GET)
+    prop = recommender.accept_property(recommendation_id, conceptset_id)
+    return JsonResponse(serializers.serialize('json', [prop]), safe=False)
 
 
 #TODO uncomment, add group_pk
