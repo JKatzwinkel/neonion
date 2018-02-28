@@ -31,12 +31,18 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	// function for recommendation access by template
 	$scope.recommended = function(){
 		return Object.values($scope._recommendationDict).filter(function(rec) {
-			return true;//rec.label.length > 0;
+			if (rec.dismissed) {
+				return false;
+			}
+			if (!rec.label || rec.label.length < 1) {
+				return false;
+			}
+			return true;
 		});
 	}
 
 	$scope.recommendationCount = function() {
-		return Object.keys($scope._recommendationDict).length;
+		return $scope.recommended().length;
 	}
 
 
@@ -131,12 +137,29 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 
 	};
 
+	
+		$scope.curateRecommendation = function(termrec, confirm) {
+			console.log('recommendation '+termrec.label);
+			if (confirm) {
+				// TODO
+			} else {
+				$scope.Recommendations.get({id: termrec.id},
+					function(recommendation) {
+						console.log('recommendation dismissed:');
+						console.log(recommendation);
+						recommendation.dismissed = true;
+						$scope._recommendationDict[recommendation.id] = {dismissed:true};
+						recommendation.$update();
+					});
+			}
+		}
+
 
 	// schedule job that frequently resolves labels of current recommendations, if necessary
 	var recommendationLabelResolverJob = $interval(function() {
 			Object.keys($scope._recommendationDict).forEach(function(id){
 				var term = $scope._recommendationDict[id];
-				if (term.label.length < 1) {
+				if (!term.label || term.label.length < 1) {
 					$scope.resolveLabels(term);
 				} 
 				else if (!term.linked_resource) {

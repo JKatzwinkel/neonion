@@ -165,6 +165,7 @@ def heute_abend_wird_ehrenlos(data):
             except PropertyRecommendation.DoesNotExist:
                 property_recommendation = PropertyRecommendation.objects.create(
                         id=linked_property.id+'recommendation',
+                        linked_property=linked_property,
                         comment=pid)
 
             property_recommendation.confidence = len(range_types)
