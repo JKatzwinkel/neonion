@@ -52,9 +52,11 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 		$scope.ConceptRecommender.run({docId:$scope.documentId, conceptId:cid},
 			function(result) {
 				console.log(result);
+				
 				for (var i=0; i<result.length; i++) {
 					rec = result[i];
-					console.log(i, rec);
+					//console.log(i, rec);
+					// TODO und nun?
 				}
 			}).$promise.then($scope.bla);
 
@@ -104,23 +106,26 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 				if (linked_concept.label.length < 1) {
 					$scope.WikidataItemLabelResolver.get({id: linked_concept.linked_type},
 						function(label_desc) {
+							term.label = label_desc.label;
 							linked_concept.label = label_desc.label;
 							linked_concept.comment = label_desc.description;
 							linked_concept.$update();
 
-						});
-				}
+						}).$promise.then(function(){
+			
 
-				// then we need to retrieve a fresh instance of the recommendation object (in order to be able to $update)
-				// and we can update its label and description just like we did with its linked concept
-				$scope.Recommendations.get({id: term.id},
-					function(recommendation) {
-						console.log(recommendation);
-						recommendation.label = linked_concept.label;
-						recommendation.comment = linked_concept.comment;
-						recommendation.$update();
+						// then we need to retrieve a fresh instance of the recommendation object (in order to be able to $update)
+						// and we can update its label and description just like we did with its linked concept
+						$scope.Recommendations.get({id: term.id},
+							function(recommendation) {
+								console.log('recommendation:');
+								console.log(recommendation);
+								recommendation.label = linked_concept.label;
+								recommendation.comment = linked_concept.comment;
+								recommendation.$update();
+							});
 					});
-
+				}
 			}
 		);
 

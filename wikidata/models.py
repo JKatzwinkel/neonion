@@ -33,6 +33,7 @@ class Recommendation(ResourceMixin, models.Model):
 
     class Meta:
         app_label = "wikidata"
+        ordering = ["-confidence"]
 
 
 class ConceptRecommendation(Recommendation):
@@ -43,9 +44,6 @@ class ConceptRecommendation(Recommendation):
     class_uri = neonion.CONCEPT_RECOMMENDATION
 
 
-    class Meta:
-        app_label = "wikidata"
-        ordering = ["-confidence"]
 
 
 class PropertyRecommendation(Recommendation):
@@ -55,6 +53,4 @@ class PropertyRecommendation(Recommendation):
 
     class_uri = neonion.PROPERTY_RECOMMENDATION
 
-    class Meta:
-        app_label = "wikidata"
 
