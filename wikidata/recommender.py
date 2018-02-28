@@ -89,11 +89,13 @@ def heute_abend_wird_ehrenlos(data):
             # mit begruendung sogar
             reason = ReasonForRecommendation.objects.create(
                     label='Closely related to annoted entities of type {}.'.format(classifier_id))
+            reason.id = uuid.uuid1().hex
             concept_recommendation.reasons.add(reason)
             concept_recommendation.confidence=support_record.get('count')
 
 
             # dann speichern
+            reason.save()
             concept_recommendation.save()
 
 

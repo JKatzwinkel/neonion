@@ -9,11 +9,11 @@ from annotationsets.models import ConceptSet, Concept, Property, LinkedConcept, 
 
 class ReasonForRecommendation(ResourceMixin, models.Model):
 
-    def __init__(self, **kwargs):
-        super(ResourceMixin, self).__init__()
-        self.id = uuid.uuid1().hex
-        for k,v in kwargs.items():
-            self.__dict__[k] = v
+    # def __init__(self, **kwargs):
+    #     super(ResourceMixin, self).__init__()
+    #     self.id = uuid.uuid1().hex
+    #     for k,v in kwargs.items():
+    #         self.__dict__[k] = v
 
     objects = models.Manager
 

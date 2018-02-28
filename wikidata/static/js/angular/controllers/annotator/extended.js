@@ -31,7 +31,7 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	// function for recommendation access by template
 	$scope.recommended = function(){
 		return Object.values($scope._recommendationDict).filter(function(rec) {
-			return rec.label && rec.label.length > 0;
+			return true;//rec.label.length > 0;
 		});
 	}
 
