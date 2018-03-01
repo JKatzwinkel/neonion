@@ -227,6 +227,33 @@ def heute_abend_wird_ehrenlos(data):
 
 
 
+    # snoopy nun
+    concept_properties = [lp.linked_property.split('/')[-1]
+            for p in Concept.objects.get(id=classifier_id).properties.all()
+            for lp in p.linked_properties.all()]
+
+    print(concept_properties)
+    if len(concept_properties) > 0:
+        property_suggestions = util.snoopy_property_suggestion(concept_properties).get('recommentations',[])
+
+        for suggestion in property_suggestions:
+            pid = suggestion['property']
+            lp = get_linked_property("https://www.wikidata.org/wiki/Property:{}".format(pid))
+
+            try:
+                property_recommendation = PropertyRecommendation.objects.get(
+                        linked_property__linked_property__endswith=pid)
+            except PropertyRecommendation.DoesNotExist:
+                property_recommendation = PropertyRecommendation.objects.create(
+                        id=linked_property.id+'rec',
+                        linked_property=linked_property,
+                        comment=pid)
+
+            property_recommendation.confidence += suggestion['relevance_measure']
+            property_recommendation.save()
+
+
+
 
 
 

@@ -1,3 +1,5 @@
+import json
+import requests
 
 from annotationsets.models import Concept
 
@@ -89,6 +91,11 @@ def types_related_to_entity_list(entities, concept_id, user_id):
             }
 
 
+
+def snoopy_property_suggestion(properties):
+    param = ';'.join(properties)
+    response = requests.get("http://138.232.66.120:11950/recommendations?properties={}".format(param))
+    return json.loads(response.text)
 
 
 
