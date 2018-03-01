@@ -80,7 +80,6 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 
 		$scope.ConceptRecommender.run({docId:$scope.documentId, conceptId:cid},
 			function(result) {
-				console.log(result);
 				
 				for (var i=0; i<result.length; i++) {
 					rec = result[i];
@@ -149,17 +148,19 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 								linked_concept.comment = label_desc.description;
 								linked_concept.$update();
 
-							}).$promise.then(function(){
-				
-							// then we need to retrieve a fresh instance of the recommendation object (in order to be able to $update)
-							// and we can update its label and description just like we did with its linked concept
-							$scope.ConceptRecommendations.get({id: term.id},
-								function(recommendation) {
-									recommendation.label = linked_concept.label;
-									recommendation.comment = linked_concept.comment;
-									recommendation.$update();
-								});
-						});
+							});
+					} else {
+						// then we need to retrieve a fresh instance of the recommendation object (in order to be able to $update)
+						// and we can update its label and description just like we did with its linked concept
+						$scope.ConceptRecommendations.get({id: term.id},
+							function(recommendation) {
+								recommendation.label = linked_concept.label;
+								recommendation.comment = linked_concept.description;
+								recommendation.$update();
+								//$scope._recommendationDict.concepts[term.id] = recommendation;
+								term.label = linked_concept.label;
+								term.comment = linked_concept.comment;
+							});
 					}
 				}
 			);
@@ -176,17 +177,20 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 								linked_property.comment = label_desc.description;
 								linked_property.$update();
 
-							}).$promise.then(function(){
+							});
+					} else {
+					
+						// then we need to retrieve a fresh instance of the recommendation object (in order to be able to $update)
+						// and we can update its label and description just like we did with its linked concept
+						$scope.PropertyRecommendations.get({id: term.id},
+							function(recommendation) {
+								recommendation.label = linked_property.label;
+								recommendation.comment = linked_property.comment;
+								recommendation.$update();
+								term.label = linked_property.label;
+								term.comment = linked_property.comment;
+							});
 				
-							// then we need to retrieve a fresh instance of the recommendation object (in order to be able to $update)
-							// and we can update its label and description just like we did with its linked concept
-							$scope.PropertyRecommendations.get({id: term.id},
-								function(recommendation) {
-									recommendation.label = linked_property.label;
-									recommendation.comment = linked_property.comment;
-									recommendation.$update();
-								});
-						});
 					}
 				}
 			);
@@ -201,7 +205,7 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 				// TODO abstract
 				console.log('ok try to confirm recommended concept');
 				if (termrec.hasOwnProperty('linked_concept')) {
-					$scope._recommendationDict.concepts[termrec.id] = {dismissed:true};
+					$scope._recommendationDict.concepts[termrec.id]['dismissed'] = true;
 					$scope.AcceptConceptRecommendation.get({recId:termrec.id,conceptsetId:$scope.document.concept_set},
 						function(data) {
 							console.log('yay!');
@@ -209,11 +213,10 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 						});
 
 				} else if (termrec.hasOwnProperty('linked_property')) {
-					$scope._recommendationDict.properties[termrec.id] = {dismissed:true};
+					$scope._recommendationDict.properties[termrec.id]['dismissed'] = true;
 					$scope.AcceptPropertyRecommendation.get({recId:termrec.id,conceptsetId:$scope.document.concept_set},
 						function(data) {
 							console.log('yay!');
-							// XXX wahrscheinlich muessen wir woanders nochmal properties nachladen im relations overlay oder so
 							$scope.switchConceptSet($scope.document.concept_set);
 						});
 
@@ -223,8 +226,6 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 				if (termrec.hasOwnProperty('linked_concept')) {
 					$scope.ConceptRecommendations.get({id: termrec.id},
 						function(recommendation) {
-							console.log('recommendation dismissed:');
-							console.log(recommendation);
 							recommendation.dismissed = true;
 							$scope._recommendationDict.concepts[recommendation.id] = {dismissed:true};
 							recommendation.$update();
@@ -232,8 +233,6 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 				} else if (termrec.hasOwnProperty('linked_property')) {
 					$scope.PropertyRecommendations.get({id: termrec.id},
 						function(recommendation) {
-							console.log('recommendation dismissed:');
-							console.log(recommendation);
 							recommendation.dismissed = true;
 							$scope._recommendationDict.properties[recommendation.id] = {dismissed:true};
 							recommendation.$update();

@@ -4,8 +4,7 @@ from datetime import datetime
 
 from annotationsets.models import ConceptSet, Concept, LinkedConcept, LinkedProperty, Property
 from wikidata.models import ConceptRecommendation, PropertyRecommendation, ReasonForRecommendation
-from wikidata.util import median
-from wikidata import wiki
+from wikidata import wiki, util
 
 class BasicRecommender:
 
@@ -41,7 +40,7 @@ def make_concept_recommendation_if_necessary(type_item_id, linked_concept, class
 
         # jetzt paar geile hard facts da rein schlaumeiern
         #TODO
-        concept_recommendation.label=""
+        concept_recommendation.label=linked_concept.label if len(linked_concept.label)>0 else ""
         # mit begruendung sogar
         #reason = ReasonForRecommendation.objects.create(
         #        label='Closely related to annoted entities of type {}.'.format(classifier_id))
@@ -88,7 +87,7 @@ def get_linked_property(purl):
                 id=uuid.uuid1().hex+property_id,
                 comment='Wikidata property {}'.format(property_id))
 
-    linked_property.retrieved_at = datetime.now()
+        linked_property.retrieved_at = datetime.now()
     return linked_property
 
 
@@ -104,10 +103,15 @@ def accept_concept(recommendation_id, conceptset_id):
         wdid = wiki.extract_id(linked_concept.linked_type)
         concept = Concept.objects.create(
                 id=wdid,
-                label=recommendation.label,
+                label=recommendation.label if len(recommendation.label)>0 else linked_concept.label,
                 comment=recommendation.comment)
         concept.linked_concepts.add(linked_concept)
         #TODO properties reinfummeln
+        # mit anderen worten wenn ein neues concept erstellt wird, kann es sein, dasz das entsprechende linked concept
+        # irgendwann schonmal in 1 property recommendation erwaehnt wurde, aber bei erstellung der property das concept
+        # noch nicht da war und deshalb die property nicht anwendbar ist
+        # TODO deshalb beim erstellen von concepts bitte bei den dazugehoerigen linked concepts gucken ob diese in
+        # property recommendations stehen, und dann das neue concept mit den daraus entstandenen properties ausstatten!
         concept.save()
     conceptset.concepts.add(concept)
     conceptset.save()
@@ -125,7 +129,7 @@ def accept_property(recommendation_id, conceptset_id):
     if len(Property.objects.filter(linked_properties=linked_property)) < 1:
         wdid = wiki.extract_id(linked_property.linked_property)
         prop = Property.objects.create(id=wdid,
-                label=recommendation.label,
+                label=recommendation.label if len(recommendation.label)>0 else linked_property.label,
                 comment=recommendation.comment)
         prop.linked_properties.add(linked_property)
 
@@ -202,7 +206,7 @@ def heute_abend_wird_ehrenlos(data):
         if len(linked_concept_range) > 0:
             # linked property holen oder erzeugen
             linked_property = get_linked_property(purl)
-            linked_property.save()
+            linked_property.save() #???
 
             #Property.objects.get(linked_properties__linked_property__endswith='P57')
             try:
