@@ -136,7 +136,7 @@ def accept_property(recommendation_id, conceptset_id):
             concept.properties.add(prop)
             concept.save()
         # range
-        prop.range.add(Concept.objects.filter(linked_concepts__in=recommendation.range.all()))
+        prop.range = Concept.objects.filter(linked_concepts__in=recommendation.range.all())
         prop.save()
 
     recommendation.dismissed = True

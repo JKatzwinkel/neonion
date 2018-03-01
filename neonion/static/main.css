@@ -9969,7 +9969,7 @@ fieldset[disabled] .btn-secondary.focus {
   padding: 2px 5px 3px 5px;
 }
 .recommendations-menu-action.accept {
-  color: rgba(0, 124, 255, 0.3);
+	color: rgba(57, 255, 10, 0.8);
 }
 .recommendations-menu-action.reject {
   color: #f39100;

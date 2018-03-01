@@ -91,8 +91,7 @@
         </li>
 
         <li class="dropdown">
-            <a id="nav-suggestions" class="dropdown-toggle"  data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
-               data-tooltip="Suggestions" ng-click="checkForSuggestions()">
+            <a id="nav-suggestions" class="dropdown-toggle"  data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
             </a>
 
@@ -122,8 +121,8 @@
 
 
         <li class="dropdown" ng-controller="AnnotatorCtrlExtended">
-          <a id="nav-recommendations" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expaned="false"
-                 data-tooltip="Recommendations" ng-click="openRecommendations()" ng-switch on=" recommendationCount() > 0 ">
+          <a id="nav-recommendations" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
+                 data-tooltip="Recommendations"  ng-switch on=" recommendationCount() > 0 ">
               <div ng-switch-when=" true ">
                 <i class="fa fa-lightbulb-o" aria-hidden="true" style="color:red"></i>
                 <span class="nav-bar-indicator" style="font-size:xx-small" ng-hide="recommendationCount() < 1">

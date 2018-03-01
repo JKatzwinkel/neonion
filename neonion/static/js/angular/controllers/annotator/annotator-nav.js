@@ -128,11 +128,13 @@ neonionApp.controller('AnnotatorMenuCtrl', ['$scope', '$window', '$location', '$
 
             ConceptSetService.getDeep({id: conceptSetId},
                 function (conceptSet) {
-                    $scope.conceptSet = conceptSet
+                    $scope.conceptSet = conceptSet;
                 }).$promise.then(function(data){
 
-                    AnnotatorService.annotator().plugins.neonion.conceptSet($scope.conceptSet.concepts);
-                    DocumentService.update({'id':$scope.document.id}, $scope.document);
+                   AnnotatorService.annotator().plugins.neonion.conceptSet(
+                      $scope.conceptSet.concepts);
+                   DocumentService.update({'id':$scope.document.id},
+                      $scope.document);
 
             });
         }

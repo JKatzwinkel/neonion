@@ -28,10 +28,9 @@
          * @returns {*}
          */
         this.conceptSet = function (concepts) {
-						console.log('meh');
-						console.log(concepts);
             if (concepts) {
                 this.concepts = concepts;
+
                 if (this.editorState.annotationMode == this.annotationModes.conceptTagging) {
                     // apply if annotation mode equals concept tagging
                     this.helper.applyConceptSet(this.conceptSet(), this.adder);

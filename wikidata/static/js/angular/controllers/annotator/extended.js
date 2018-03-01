@@ -155,8 +155,6 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 							// and we can update its label and description just like we did with its linked concept
 							$scope.ConceptRecommendations.get({id: term.id},
 								function(recommendation) {
-									console.log('recommendation:');
-									console.log(recommendation);
 									recommendation.label = linked_concept.label;
 									recommendation.comment = linked_concept.comment;
 									recommendation.$update();
@@ -184,8 +182,6 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 							// and we can update its label and description just like we did with its linked concept
 							$scope.PropertyRecommendations.get({id: term.id},
 								function(recommendation) {
-									console.log('recommendation:');
-									console.log(recommendation);
 									recommendation.label = linked_property.label;
 									recommendation.comment = linked_property.comment;
 									recommendation.$update();
@@ -200,7 +196,6 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 
 	
 		$scope.curateRecommendation = function(termrec, confirm) {
-			console.log('recommendation '+termrec.label);
 			if (confirm) {
 				// TODO
 				// TODO abstract
