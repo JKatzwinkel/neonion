@@ -146,7 +146,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="recommendations-menu-entry" ng-repeat=" recommendation in recommended() " >
+                    <tr class="recommendations-menu-entry" ng-repeat=" recommendation in recommended() | orderBy:'-confidence'" >
                         <td title="{{ recommendation.comment }}" class="recommendations-menu-item">
                             <b>{{ recommendation.label }}</b>
                             <a href="{{ recommendation.linked_resource }}">
