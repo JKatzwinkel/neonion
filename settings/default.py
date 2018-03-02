@@ -38,6 +38,7 @@ LOCALE_PATHS = (
 # Application definition
 
 INSTALLED_APPS = (
+    'django_extensions',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -226,7 +227,7 @@ LOGGING = {
         'django': {
             'handlers': ['console'],
             'propagate': True,
-	    'level':'INFO',
+            'level':'INFO',
         },
         'django.request': {
             'handlers': ['console'],
