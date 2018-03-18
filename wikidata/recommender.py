@@ -1,6 +1,7 @@
 import json
 import uuid
 from datetime import datetime
+from math import log
 
 from annotationsets.models import ConceptSet, Concept, LinkedConcept, LinkedProperty, Property
 from wikidata.models import ConceptRecommendation, PropertyRecommendation, ReasonForRecommendation
@@ -17,6 +18,30 @@ class BasicRecommender:
 
     def properties(self):
         pass
+
+
+
+def normalize(data):
+    types = data.get('related_types')
+    props = data.get('related_properties')
+
+    for type_item_url, support_record in types.items():
+        weight = 0
+        for purl, objects in support_record.items():
+            try:
+                wiki.extract_id(purl)
+                tf = len(objects)
+                df = len(props.get(purl,[]))
+                if df > 0:
+                    idf = log(1. * len(types) / df)
+                    tfidf = tf * idf
+                    weight += tfidf
+            except:
+                pass
+        support_record['weight'] = support_record.get('weight', 0) + weight
+    return data
+
+
 
 def make_concept_recommendation_if_necessary(type_item_id, linked_concept, classifier_id, support_record):
     # nur wenn noch kein so ein concept gibt
@@ -46,7 +71,9 @@ def make_concept_recommendation_if_necessary(type_item_id, linked_concept, class
         #        label='Closely related to annoted entities of type {}.'.format(classifier_id))
         #reason.id = uuid.uuid1().hex,
         #concept_recommendation.reasons.add(reason)
-        concept_recommendation.confidence=support_record.get('count')
+        concept_recommendation.confidence = support_record.get(
+                'weight',
+                support_record.get('count'))
 
         # dann speichern
         #reason.save()
@@ -152,11 +179,14 @@ def accept_property(recommendation_id, conceptset_id):
 def heute_abend_wird_ehrenlos(data):
     """ so ehrenlos! """
 
+    data = normalize(data)
+
     types = data.get('related_types')
     classifier_id = data.get('concept_id')
 
     # sortieren und filtern, die mit zu wenig statements fliegen raus
-    ranked = sorted([(type_item_url,support_record) for type_item_url, support_record in types.items()
+    ranked = sorted([(type_item_url,support_record)
+        for type_item_url, support_record in types.items()
         if support_record.get('count',0) > 2],
             key=lambda t:t[1].get('count'),
             reverse=True)
@@ -185,12 +215,14 @@ def heute_abend_wird_ehrenlos(data):
         linked_concept.save()
 
         # ok das haetten wir aber jetzt wird aufregend
-        make_concept_recommendation_if_necessary(type_item_id, linked_concept, classifier_id, support_record)
+        make_concept_recommendation_if_necessary(type_item_id, linked_concept,
+                classifier_id, support_record)
 
     # ok jetzt properties
     # linked concept fuer property domain
     linked_concept_domain = Concept.objects.get(id=classifier_id).linked_concepts.get(
             endpoint__endswith='wikidata.org')
+
     # geh property liste von http endpunkt durch
     for purl, range_types in props.items():
         pid = purl.split('/')[-1]
