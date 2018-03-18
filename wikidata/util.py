@@ -79,6 +79,7 @@ def types_related_to_entity_list(entities, concept_id, user_id):
     for t,rec in types.items():
         ret[t]['count'] = count(rec)
     #ret = sorted([(k,v) for k,v in ret.items()], key=count)
+    props = {p:list(set(tt)) for p,tt in props.items()}
     p_count_mean = sum([len(tt) for p,tt in props.items()]) / len(props) if len(props)>0 else 0
     rep = {p:tt for p,tt in props.items() if len(tt)>p_count_mean}
 
