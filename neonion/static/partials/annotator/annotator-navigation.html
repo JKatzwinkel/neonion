@@ -124,8 +124,8 @@
           <a id="nav-recommendations" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
                  data-tooltip="Recommendations"  ng-switch on=" recommendationCount() > 0 ">
               <div ng-switch-when=" true ">
-                <i class="fa fa-lightbulb-o" aria-hidden="true" style="color:red;font-size:xx-large"></i>
-                <span class="nav-bar-indicator" style="font-size:xx-small" ng-hide="recommendationCount() < 1">
+                <i class="fa fa-lightbulb-o" aria-hidden="true" style="color:red;font-size:x-large"></i>
+                <span class="nav-bar-indicator" style="font-size:x-small;color:red" ng-hide="recommendationCount() < 1">
                   {{ recommendationCount() }}
                 </span>
               </div>
@@ -138,11 +138,12 @@
             <table class="dropdown-menu dropdown-menu-side recommendations recommendations-navbar">
                 <thead class="dropdown-header">
                     <tr>
-                        <th width="70%">
+                        <th width="64%">
                             Concept Set Recommendations
                         </th>
-                        <th width="15%" style="text-align:right"/>
-                        <th width="15%" style="text-align:right"/>
+                        <th width="12%" style="text-align:right"/>
+                        <th width="12%" style="text-align:right"/>
+                        <th width="12%" style="text-align:right"/>
                     </tr>
                 </thead>
                 <tbody>
@@ -152,7 +153,9 @@
                             <a href="{{ recommendation.linked_resource }}">
                                  ({{ recommendation.linked_resource.split('/').pop() }})
                             </a>
-                            ({{ recommendation.confidence }})
+                        </td>
+                        <td style="text-align:right;font-size:xx-small">
+                            <small>{{ recommendation.confidence }}</small>
                         </td>
                         <td ng-click="curateRecommendation(recommendation, true)" class="fa fa-plus-square recommendations-menu-action accept"/>
                         <td ng-click="curateRecommendation(recommendation, false)" class="fa fa-remove recommendations-menu-action reject"/>

@@ -7,7 +7,7 @@
      * @returns {*}
      */
     Annotator.Plugin.neonion.prototype.formatter['http://neonion.org/concept/person'] = function (value) {
-        var label = value.label;
+        var label = '<span style="font-weight:600">' + value.label + '</span>';
         if (value.birth) {
             label += "<span>&nbsp;&#42;&nbsp;" + value.birth;
             if (value.death) {
