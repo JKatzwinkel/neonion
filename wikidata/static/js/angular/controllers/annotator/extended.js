@@ -61,7 +61,11 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 		return Object.values(
 			$scope._recommendationDict.concepts).filter(displayFilter)
 			.concat(Object.values(
-				$scope._recommendationDict.properties).filter(displayFilter));
+				$scope._recommendationDict.properties).filter(displayFilter)).sort(
+					function(a,b){
+						return b.confidence - a.confidence;
+					}
+				);
 	}
 
 	$scope.recommendationCount = function() {
