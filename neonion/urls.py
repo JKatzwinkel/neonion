@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^annotation_occurrences$', 'neonion.views.annotation_occurrences'),
     url(r'^annotation_documents$', 'neonion.views.annotation_documents'),
     url(r'^import/$', 'neonion.views.import_document'),
+    url(r'^modify/(?P<document_pk>.+)$', 'neonion.views.modify_document'),
     url(r'^vocabulary/$', 'neonion.views.render_vocabulary'),
     url(r'^settings/$', 'neonion.views.render_settings'),
     url(r'^query$', 'neonion.views.render_query'),
@@ -32,4 +33,3 @@ urlpatterns = [
 
 urlpatterns += staticfiles_urlpatterns()
 #urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-

@@ -211,7 +211,7 @@ class SearchView(generics.GenericAPIView):
             query = get_filter_query(params)
             response = es.search(body=query, index=settings.ELASTICSEARCH_INDEX,
                                  doc_type=ANNOTATION_TYPE, from_=offset, size=size)
-        except exceptions.ElasticHttpNotFoundError:
+        except exceptions.TransportError:
             return JsonResponse(empty_result())
         except:
             return HttpResponse(status=500)
@@ -374,7 +374,7 @@ def search(request, format=None):
         query = get_filter_query(params)
         response = es.search(body=query, index=settings.ELASTICSEARCH_INDEX,
                              doc_type=ANNOTATION_TYPE, from_=offset, size=size)
-    except exceptions.ElasticHttpNotFoundError:
+    except exceptions.TransportError:
         return JsonResponse(empty_result())
     except:
         return HttpResponse(status=500)
