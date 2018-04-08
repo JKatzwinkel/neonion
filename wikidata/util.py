@@ -71,17 +71,18 @@ def types_related_to_entity_list(entities, concept_id, user_id):
     for i in res:
         var = lambda x:i[x]['value'] # this is how wikidata response to sparql look like don't @ me
         record = types.get(var('supertype'), {})
-        p = 'https://www.wikidata.org/wiki/Property:P279'
+        p = 'https://www.wikidata.org/prop/direct/P279'
         record[p] = record.get(p, []) + [var('type')]
         types[var('supertype')] = record
 
     ret = types
     for t,rec in types.items():
-        ret[t]['count'] = count(rec)
+        ret[t] = {'count': count(rec), 'predicates': rec}
+
     #ret = sorted([(k,v) for k,v in ret.items()], key=count)
     props = {p:list(set(tt)) for p,tt in props.items()}
     p_count_mean = sum([len(tt) for p,tt in props.items()]) / len(props) if len(props)>0 else 0
-    rep = {p:tt for p,tt in props.items() if len(tt)>p_count_mean}
+    rep = {p:{'types':tt,'count':len(tt)} for p,tt in props.items()}
 
     return {
             "concept_id": concept_id,

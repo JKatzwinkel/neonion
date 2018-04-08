@@ -27,11 +27,11 @@ def normalize(data):
 
     for type_item_url, support_record in types.items():
         weight = 0
-        for purl, objects in support_record.items():
+        for purl, objects in support_record.get('predicates',{}).items():
             try:
                 wiki.extract_id(purl)
                 tf = len(objects)
-                df = len(props.get(purl,[]))
+                df = props.get(purl,{}).get('count')
                 if df > 0:
                     idf = log(1. * len(types) / df)
                     tfidf = tf * idf
@@ -176,8 +176,8 @@ def accept_property(recommendation_id, conceptset_id):
 
 
 
-def heute_abend_wird_ehrenlos(data):
-    """ so ehrenlos! """
+def compute_recommendations(data):
+    """ process predicate/type record assembled from SPARQL queries about locally identified instances of a certain concept. """
 
     data = normalize(data)
 
@@ -200,7 +200,7 @@ def heute_abend_wird_ehrenlos(data):
         linked_concept = get_linked_concept(type_item_url, create=True)
 
         # ok jetzt wo wir das linked concept schonmal in der hand halten, koennen wir auch gleich paar subclass of beziehungen drunterwemmsen
-        subclasses = support_record.get('https://www.wikidata.org/wiki/Property:P279',[]) #TODO
+        subclasses = support_record.get('predicates',{}).get('https://www.wikidata.org/prop/direct/P279',[]) #TODO
         for subclass_url in subclasses:
             try:
                 sub = LinkedConcept.objects.get(linked_type=subclass_url)
@@ -225,6 +225,7 @@ def heute_abend_wird_ehrenlos(data):
 
     # geh property liste von http endpunkt durch
     for purl, range_types in props.items():
+        range_types = range_types.get('types', [])
         pid = purl.split('/')[-1]
         #props[pid] = props.get(pid, []) + [type_item_id]##XXX
 

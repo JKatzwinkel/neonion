@@ -194,7 +194,7 @@ def types_related_to_entities_in_document(request, document_pk, concept_id=None)
     types = util.types_related_to_entity_list(entities, concept_id, request.user.id)
 
     if request.method == 'PUT':
-        recommender.heute_abend_wird_ehrenlos(types)
+        recommender.compute_recommendations(types)
 
 
     return JsonResponse(types, safe=False)
