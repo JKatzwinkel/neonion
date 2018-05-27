@@ -23,7 +23,9 @@ urlpatterns = [
         url(r'^entities/label/(?P<item_id>.+)/?$', 'wikidata.views.resolve_item_labels'),
 
         url(r'^recommendedconcepts/accept/(?P<recommendation_id>.+)/(?P<conceptset_id>.+)', 'wikidata.views.accept_concept_recommendation'),
-        url(r'^recommendedproperties/accept/(?P<recommendation_id>.+)/(?P<conceptset_id>.+)', 'wikidata.views.accept_property_recommendation')
+        url(r'^recommendedproperties/accept/(?P<recommendation_id>.+)/(?P<conceptset_id>.+)', 'wikidata.views.accept_property_recommendation'),
+
+        url(r'^terminology/(?P<conceptset_id>.+)/(?P<concept_pk>.+)/(?P<entity_id>.+)', 'wikidata.views.retrieve_terminology')
 
         ]
 

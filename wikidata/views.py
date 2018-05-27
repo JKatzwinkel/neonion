@@ -18,7 +18,7 @@ os.environ["PYWIKIBOT2_NO_USER_CONFIG"] = "1"
 import wiki
 import util
 import recommender
-
+import terminology
 
 
 # action, search, limit
@@ -275,4 +275,19 @@ def annotated_statements(request, document_pk):
 def implicit_statements(request, document_pk):
     params = dict(request.GET)
     raise NotImplementedError('view is not implemented yet')
+
+
+@require_GET
+def retrieve_terminology(request, conceptset_id, concept_pk, entity_id):
+    params = dict(request.GET)
+    concept = get_object_or_404(Concept, pk=concept_pk)
+    linked = [linky.linked_type for linky in concept.linked_concepts.all()]
+    print("UH AH YEAH TERM RETRIEVAL EXTRACITON AND ACTION")
+    print("{} {} {}".format(conceptset_id, concept.id, entity_id))
+    for linky in linked:
+        print(linky)
+        tax = terminology.extract_descriptive_terminology(conceptset_id, linky, entity_id)
+    recommender.doit()
+    return JsonResponse({}, safe=False)
+
 

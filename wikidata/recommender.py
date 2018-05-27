@@ -5,19 +5,83 @@ from math import log
 
 from annotationsets.models import ConceptSet, Concept, LinkedConcept, LinkedProperty, Property
 from wikidata.models import ConceptRecommendation, PropertyRecommendation
-from wikidata import wiki, util
-
-class BasicRecommender:
-
-    def __init__(self, data):
-        self.data = data
-
-    def concepts(self):
-        pass
+from wikidata import wiki, util, terminology
 
 
-    def properties(self):
-        pass
+_recommender_registry = {
+        "concept": [],
+        "property": []
+        }
+
+def recommender(kind):
+    def recommender_decorator(func):
+        def wrapper():
+            func()
+        _recommender_registry.get(kind, []).append({
+            'func': wrapper,
+            'kind': kind,
+            'desc': func.__doc__,
+            'name': func.__name__})
+        wrapper.__name__ = func.__name__
+        return wrapper
+    return recommender_decorator
+
+
+@recommender("concept")
+def recommend_common_supertypes():
+    """ a simple page rank implementation. """
+    print('running supertype recommender')
+    count = terminology.count_object_types('apparatus')
+    scores = terminology.pagerank('apparatus', count)
+    taxonomy = {}
+    for term in scores.keys():
+        term_data = terminology.lookup_term_record('apparatus', 'term', term)
+        taxonomy[term] = {k:term_data.get(k, []) for k in ['broader', 'narrower']}
+    threshold = max(scores.values()) * .25
+    candidates = {term:scores.get(term) for term in taxonomy.keys()
+            if len(taxonomy.get(term,{}).get('broader',[])) < 1
+            and scores.get(term,0) > threshold}
+    for term, score in candidates.items():
+        print(u'{} ({}) - {}  ({})'.format(wiki.label(term), term, score, count.get(term,0)))
+    return candidates
+
+
+@recommender("property")
+def most_frequent_properties():
+    """ determined the properties that occur most. """
+    print('running property recommender')
+    properties = terminology.faceted_statements('apparatus', 'pt', query='NOT t:null')
+    ranking = sorted(properties.items(), key=lambda t:len(t[1]))[len(properties)/2:]
+
+    for term,info in ranking:
+        objects = []
+        for tt,objs in info.items():
+            objects.extend([o.get('o') for o in objs])
+        objects = set(objects)
+        print(u'{} ({}) types: {} individual objects: {} ratio {}'.format(wiki.label(term), term, len(info), len(objects), 1.*len(objects)/len(info)))
+
+    return {term:len(info) for term,info in ranking}
+
+
+candidates = {}
+def doit():
+    global candidates
+    for kind, registered in _recommender_registry.items():
+        print(kind)
+        for rec in registered:
+            print(rec)
+            cand = rec.get('func')()
+            if cand:
+                for term,score in cand.items():
+                    candidates[kind] = candidates.get(kind, []) + [{
+                        'score': score,
+                        'term': term,
+                        'provider': rec.get('name'),
+                        'description': rec.get('desc')}]
+
+
+
+
 
 
 

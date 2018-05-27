@@ -4,7 +4,14 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 	angular.extend(this, $controller('AnnotatorCtrl', {$scope: $scope}));
 	$scope.annotator = undefined;
 
-	console.log('hehehe');
+
+	$scope.WikidataTerminologyRetrievalService = $resource('/wikidata/terminology/:conceptsetId/:conceptId/:entityId', 
+		{conceptsetId: '@conceptsetId', conceptId: '@conceptId', entityId: '@entityId'},
+		{
+			'run': {method: 'GET'}
+		}
+	);
+	
 
 	$scope.ConceptRecommender = $resource('/wikidata/related/types/doc/:docId/concept/:conceptId',
 		{docId:'@docId',conceptId:'@conceptId'},
@@ -91,9 +98,25 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 					// TODO und nun?
 				}
 			}).$promise.then($scope.bla);
-
-
 	}
+
+	
+	$scope.retrieveTerminology = function(event) {
+		var annotation = event.annotation || event;
+
+		var qid = annotation ? annotation.oa.hasBody.identifiedAs.split('/').pop() : undefined;
+		var cid = annotation ? annotation.oa.hasBody.classifiedAs.split('/').pop() : undefined;
+
+		$scope.WikidataTerminologyRetrievalService.run(
+			{conceptsetId: $scope.document.concept_set,
+				conceptId: cid,
+				entityId: qid
+			},
+			function(result) {
+				console.log(result);
+			}).$promise.then($scope.bla);
+		}
+		
 
 	$scope.bla = function() {
 		console.log('Hm');
@@ -112,8 +135,9 @@ neonionApp.controller('AnnotatorCtrlExtended', ['$scope', '$controller', '$resou
 		if (!$scope.annotator) {
 			console.log('OK better subscribe to this annotator');
 	    $scope.annotator = angular.element("#document-body").data("annotator");
-	    $scope.annotator.subscribe("annotationEditorSubmit", $scope.updateRecommender)
-											.subscribe("annotationDeleted", $scope.updateRecommender);
+//	    $scope.annotator.subscribe("annotationEditorSubmit", $scope.updateRecommender)
+//											.subscribe("annotationDeleted", $scope.updateRecommender);
+			$scope.annotator.subscribe("annotationEditorSubmit", $scope.retrieveTerminology);
 			$interval.cancel(initialHookJob);
 		}
 	}, 1000);

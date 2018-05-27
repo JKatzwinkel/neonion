@@ -128,6 +128,8 @@ def extract_descriptive_terminology(conceptset, concept_id, entity):
             term_record[k] = list(set(term_record.get(k, [])))
         store(conceptset, 'term', term_record)
 
+    return taxonomy
+
 
 
 
@@ -175,7 +177,7 @@ def print_facet(faceted_record, indent=0):
             print_facet(rec, indent=indent+1)
         elif type(rec) is list:
             for entry in rec:
-                print(u'{} {}'.format(' '*indent, ' '.join(['{}:{}'.format(k,v) for k,v in entry.items() if not k == 'id'])))
+                print(u'{} {}'.format(' '*indent, ' '.join([u'{}:{}'.format(k,v) for k,v in entry.items() if not k == 'id'])))
 
 
 
@@ -196,10 +198,12 @@ def pagerank(conceptset, scores):
             superclasses = lookup_term_record(conceptset, 'term', term).get('broader', [])
             if len(superclasses) > 0:
                 shares = 0.5 * score / len(superclasses)
+                momentum = max(momentum, shares)
                 for superid in superclasses:
                     new_scores[superid] = new_scores.get(superid,0) + shares
-                    momentum += shares
-                    #new_scores[term] = new_scores.get(term,0) + shares
+
+                new_scores[term] = new_scores.get(term,0) + .5 * score
+
             else:
                 new_scores[term] = score
         scores = new_scores

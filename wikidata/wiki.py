@@ -80,7 +80,12 @@ def label(entity, lang='en'):
       if type(entity) in [str, unicode]:
           ident = extract_id(entity)
           if ident:
-              entity = item(ident) if ident.lower().startswith('q') else prop(ident)
+              if ident.lower().startswith('q'):
+                  entity = item(ident)
+              elif ident.lower().startswith('p'):
+                  entity = prop(ident)
+              else:
+                  return None
           else:
               return None
       if entity.id in label_cache:
@@ -118,5 +123,5 @@ def sparql(query, limit=500):
 
 def query(query):
     """ submits a SPARQL query requesting a list of items. It must contain an ?item variable. Result is a list of pywikibot Page objects. """
-    gen = pg.WikidataSPARQLPageGenerator('select ?item where {{{}}}'.format(query), site=_site, result_type=list, item_name=item_name)
+    gen = pg.WikidataSPARQLPageGenerator('select ?item where {{{}}}'.format(query), site=_site, result_type=list, item_name='item')
     return [q for q in gen]
