@@ -57,7 +57,7 @@ def extract_id(url):
   """ Extracts item or property ID from any string."""
   if url:
       matches = _re.findall("[PpQq][1-9][0-9]*", url)
-      return matches[0] if len(matches) > 0 else None
+      return matches[0].upper() if len(matches) > 0 else url
 
 def item(id):
   if not id.lower().startswith('q'):
@@ -71,16 +71,23 @@ def prop(id):
   return _wiki.PropertyPage(repo, id)
 
 
+label_cache = {}
+
 def label(entity, lang='en'):
   """ returns an entity's label in language `lang` or the first one available """
+  global label_cache
   if entity:
-      if type(entity) is str:
+      if type(entity) in [str, unicode]:
           ident = extract_id(entity)
           if ident:
               entity = item(ident) if ident.lower().startswith('q') else prop(ident)
           else:
               return None
-      labels = entity.get().get('labels', {})
+      if entity.id in label_cache:
+          labels = label_cache.get(entity.id, {})
+      else:
+          labels = entity.get().get('labels', {})
+          label_cache[entity.id] = labels
       if lang in labels:
         return labels.get(lang)
       else:
