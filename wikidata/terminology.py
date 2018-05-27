@@ -167,6 +167,8 @@ def _faceted(hits, particles):
 
 
 def print_facet(faceted_record, indent=0):
+    """ takes a faceted dictionary representation of a statement collection (just as `faceted_statements` returns it)
+    and prints them in a nested manner according to its faceted structure. """
     for key, rec in faceted_record.items():
         print(u'{}{} ({})'.format(' '*indent, wiki.label(key), key))
         if type(rec) is dict:
@@ -174,6 +176,34 @@ def print_facet(faceted_record, indent=0):
         elif type(rec) is list:
             for entry in rec:
                 print(u'{} {}'.format(' '*indent, ' '.join(['{}:{}'.format(k,v) for k,v in entry.items() if not k == 'id'])))
+
+
+
+def count_object_types(conceptset):
+    """ simply count how often every object type has been found so far in the extracted terminological knowledge. """
+    # init scores using statements grouped by object types
+    scores = {term:len(record) for term,record in faceted_statements(conceptset, 't', query='NOT t:null').items()}
+    return scores
+
+
+def pagerank(conceptset, scores):
+    """ runs pagerank but only goes only up (superclasses). """
+    momentum = 1
+    while momentum > .5:
+        new_scores = {}
+        momentum = 0
+        for term, score in scores.items():
+            superclasses = lookup_term_record(conceptset, 'term', term).get('broader', [])
+            if len(superclasses) > 0:
+                shares = 0.5 * score / len(superclasses)
+                for superid in superclasses:
+                    new_scores[superid] = new_scores.get(superid,0) + shares
+                    momentum += shares
+                    #new_scores[term] = new_scores.get(term,0) + shares
+            else:
+                new_scores[term] = score
+        scores = new_scores
+    return scores
 
 
 
