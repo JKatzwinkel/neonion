@@ -4,7 +4,7 @@ from datetime import datetime
 from math import log
 
 from annotationsets.models import ConceptSet, Concept, LinkedConcept, LinkedProperty, Property
-from wikidata.models import ConceptRecommendation, PropertyRecommendation, ReasonForRecommendation
+from wikidata.models import ConceptRecommendation, PropertyRecommendation
 from wikidata import wiki, util
 
 class BasicRecommender:
@@ -65,18 +65,16 @@ def make_concept_recommendation_if_necessary(type_item_id, linked_concept, class
 
         # jetzt paar geile hard facts da rein schlaumeiern
         #TODO
-        concept_recommendation.label=linked_concept.label if len(linked_concept.label)>0 else ""
+        concept_recommendation.label = linked_concept.label if len(linked_concept.label)>0 else ""
         # mit begruendung sogar
-        #reason = ReasonForRecommendation.objects.create(
-        #        label='Closely related to annoted entities of type {}.'.format(classifier_id))
-        #reason.id = uuid.uuid1().hex,
-        #concept_recommendation.reasons.add(reason)
+        explanation = 'Closely related to annotated entities of type {}.\n'.format(classifier_id)
+        if not explanation in concept_recommendation.comment:
+            concept_recommendation.comment += explanation
         concept_recommendation.confidence = support_record.get(
                 'weight',
                 support_record.get('count'))
 
         # dann speichern
-        #reason.save()
         concept_recommendation.save()
         return concept_recommendation
 

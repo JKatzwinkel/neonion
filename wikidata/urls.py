@@ -1,14 +1,13 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 
-from wikidata.rest import ConceptRecommendationViewSet, ReasonForRecommendationViewSet, PropertyRecommendationViewSet
+from wikidata.rest import ConceptRecommendationViewSet, PropertyRecommendationViewSet
 
 import api.urls
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'recommendedconcepts', ConceptRecommendationViewSet)
 router.register(r'recommendedproperties', PropertyRecommendationViewSet)
-router.register(r'reasonsforrecommendation', ReasonForRecommendationViewSet)
 
 
 urlpatterns = [

@@ -44,7 +44,6 @@ def types_related_to_entity_list(entities, concept_id, user_id):
     # just the concept connector
     linked_types = [lc.linked_type for lc in Concept.objects.get(id=concept_id).linked_concepts.all()]
 
-
     res = wiki.sparql(related_types_query.format(entities=make_value_list(entities)))
 
     # assign related types to properties, under both type and property key
@@ -62,7 +61,6 @@ def types_related_to_entity_list(entities, concept_id, user_id):
             #record[var('item')] = record.get(var('item'), []) + [var('obj')]
             props[var('p')] = props.get(var('p'), []) + [var('item')]
         #TODO inverse property ?pr unter `related` eintragen?
-
 
     # query supertypes of detected related types
     res = superclasses(types.keys())

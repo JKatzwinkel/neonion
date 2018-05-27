@@ -1,6 +1,6 @@
 from rest_framework import viewsets, status, serializers
 
-from wikidata.models import ConceptRecommendation, ReasonForRecommendation, PropertyRecommendation
+from wikidata.models import ConceptRecommendation, PropertyRecommendation
 
 
 class ConceptRecommendationSerializer(serializers.ModelSerializer):
@@ -24,14 +24,5 @@ class PropertyRecommendationViewSet(viewsets.ModelViewSet):
     serializer_class = PropertyRecommendationSerializer
 
 
-
-class ReasonForRecommendationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReasonForRecommendation
-        fields = ('id', 'label','comment')
-
-class ReasonForRecommendationViewSet(viewsets.ModelViewSet):
-    queryset = ReasonForRecommendation.objects.all()
-    serializer_class = ReasonForRecommendationSerializer
 
 
