@@ -4,14 +4,17 @@ import re as _re
 from datetime import datetime
 
 import pywikibot as _wiki
+print(_wiki.version.getversiondict())
+
 from pywikibot import pagegenerators as pg
 
-from SPARQLWrapper import SPARQLWrapper, JSON
+from SPARQLWrapper import SPARQLWrapper, JSON,POSTDIRECTLY
 
 __all__ = ['repo', 'sparql', 'item', 'prop', 'label', 'extract_id', 'query']
 
 _sparqli = SPARQLWrapper('https://query.wikidata.org/bigdata/namespace/wdq/sparql')
 _sparqli.setReturnFormat(JSON)
+_sparqli.setRequestMethod(POSTDIRECTLY)
 
 _site = _wiki.Site('wikidata', 'wikidata')
 repo = _site.data_repository()
@@ -52,7 +55,9 @@ def create_monolingualtext(text, lang):
 
 def extract_id(url):
   """ Extracts item or property ID from any string."""
-  return _re.findall("[PpQq][1-9][0-9]*", url)[0]
+  if url:
+      matches = _re.findall("[PpQq][1-9][0-9]*", url)
+      return matches[0] if len(matches) > 0 else None
 
 def item(id):
   if not id.lower().startswith('q'):
@@ -68,12 +73,19 @@ def prop(id):
 
 def label(entity, lang='en'):
   """ returns an entity's label in language `lang` or the first one available """
-  labels = entity.get().get('labels', {})
-  if lang in labels:
-    return labels.get(lang)
-  else:
-    for v in labels.values():
-      return v
+  if entity:
+      if type(entity) is str:
+          ident = extract_id(entity)
+          if ident:
+              entity = item(ident) if ident.lower().startswith('q') else prop(ident)
+          else:
+              return None
+      labels = entity.get().get('labels', {})
+      if lang in labels:
+        return labels.get(lang)
+      else:
+        for v in labels.values():
+          return v
 
 def description(entity, lang='en'):
     """ returns entity description in specified language """
@@ -83,7 +95,6 @@ def description(entity, lang='en'):
     else:
         for v in desc.values():
             return v
-
 
 def object_labels(entity, prop='P279'):
     """ returns a list, containing the labels of all targets of this entity's statements of given property """
@@ -98,8 +109,7 @@ def sparql(query, limit=500):
   return results.get('results', {}).get('bindings', [])
 
 
-def query(query, item_name='item'):
+def query(query):
     """ submits a SPARQL query requesting a list of items. It must contain an ?item variable. Result is a list of pywikibot Page objects. """
-    gen = pg.WikidataSPARQLPageGenerator('select ?item where {{{}}}'.format(query),
-            site=_site, result_type=list, item_name=item_name)
+    gen = pg.WikidataSPARQLPageGenerator('select ?item where {{{}}}'.format(query), site=_site, result_type=list, item_name=item_name)
     return [q for q in gen]

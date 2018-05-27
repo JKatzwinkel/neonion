@@ -86,13 +86,13 @@ def make_concept_recommendation_if_necessary(type_item_id, linked_concept, class
 def get_linked_concept(type_item_url, create=False):
     type_item_id = type_item_url.split('/')[-1]
     linked_concept=None
-    # ok guck ob es schon linked concept fuer das gibt
+    # check if any linked concept object containing this type already exists
     try:
         linked_concept = LinkedConcept.objects.get(
                 linked_type__endswith=type_item_id)
     except LinkedConcept.DoesNotExist:
         if create:
-            # einfach erzeugen das ding 1fach mal aus scheisz
+            # in case type is not yet present in form of a linked concept, create one
             linked_concept = LinkedConcept.objects.create(
                     linked_type=type_item_url,
                     id=uuid.uuid1().hex+type_item_id)
@@ -101,12 +101,15 @@ def get_linked_concept(type_item_url, create=False):
             linked_concept.endpoint = u'https://www.wikidata.org'
     return linked_concept
 
+
 def get_linked_property(purl):
     property_id = purl.split('/')[-1]
     try:
+        # check if any linked property object containing this property already exists
         linked_property = LinkedProperty.objects.get(
                 linked_property__endswith=property_id)
     except LinkedProperty.DoesNotExist:
+        # in case property is not yet present in form of a linked concept, create one
         linked_property = LinkedProperty.objects.create(
                 linked_property=purl,
                 id=uuid.uuid1().hex+property_id,
