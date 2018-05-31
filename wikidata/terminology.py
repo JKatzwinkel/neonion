@@ -190,8 +190,13 @@ def facet_level_values(facet, level, flat=True):
     if `flat` is `True` (default), only keys are returned instead of list of `(key, values)` tuples. The returned collection of keys is of
     type set, i.e. it contains no dublettes.
     """
+    extract = lambda t:t[0] if len(t) is 2 else t
     if flat:
-        return set([k for k,v in _facet_level_retrieval_func(level)(facet.items())])
+        collection = [extract(t) for t in  _facet_level_retrieval_func(level)(facet.items())]
+        try:
+            return set(collection)
+        except:
+            return collection
     return _facet_level_retrieval_func(level)(facet.items())
 
 
@@ -205,9 +210,10 @@ def _facet_level_retrieval_func(depth):
     the example facet when applied to it. For `depth=2`, the returned function will return `[o0,o1,o2]`
     when applied to said facet.
     """
+    extract = lambda v: v.items() if type(v) is dict else v
     if depth < 1:
         return lambda items: [(k,v) for k,v in items]
-    return lambda items: reduce(lambda x,y:x+y, [v.items() for k,v in _facet_level_retrieval_func(depth-1)(items)])
+    return lambda items: reduce(lambda x,y:x+y, [extract(v) for k,v in _facet_level_retrieval_func(depth-1)(items)])
 
 
 
